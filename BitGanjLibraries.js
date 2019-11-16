@@ -102,14 +102,18 @@ BitGanjLibraries.prototype.processPoint = function(pEntry) {
     var vFinOperationsCount = vInvoice.field("isHasFinoperation");
     log ("Order id:" + vOrderId + " was found. And have invoice id: " + vInvoiceId + " with state"  + vInvoiceState + " and fin operations:" + vFinOperationsCount);
     if (((vInvoiceState === "Payed") || (vInvoiceState === "OverPay")) && vFinOperationsCount === false ){
-                        message("Create fin operation for invoice id:" + vInvoiceId );                                                                  
                         var vFinOperationEntry = this.createFinOperation();                              
-                        var vAmount = vInvoice.field("BalanceDelta");
-                        vFinOperationEntry.set("Amount",vAmount);
-                        vFinOperationEntry.set("Invoice",vInvoice);
-                        vInvoice.set("isHasFinoperation",1);    
-                        vFinOperationEntry.recalc();
-                        this.addFinOperation(vFinOperationEntry);
+                        if (vFinOperationEntry != false) {
+                           message("Create fin operation for invoice id:" + vInvoiceId );                                                                  
+                           var vAmount = vInvoice.field("BalanceDelta");
+                           var vFODate = vInvoice.field("InvoiceEndDate");
+                           vFinOperationEntry.set("Date", vFODate);
+                           vFinOperationEntry.set("Amount",vAmount);
+                           vFinOperationEntry.set("Invoice",vInvoice);
+                           vInvoice.set("isHasFinoperation",1);    
+                           vFinOperationEntry.recalc();
+                           this.addFinOperation(vFinOperationEntry);
+                        }
         }                                   
 }; 
 
@@ -123,6 +127,8 @@ BitGanjLibraries.prototype.addFinOperation = function(vNewFinOperation){
 BitGanjLibraries.prototype.createFinOperation = function(){
     var vUtil = new  BitGanjUtils(this.server, null, this.timeshift);
     var vFinLib = vUtil.getLibByName("FinOperations");
-    var vFinOperation = vFinLib.create(new Object({FinType:'Debet',OperationType:'Продажа'}));
-    return vFinOperation;    
+    if (vFinLib != false) {
+      var vFinOperation = vFinLib.create(new Object({FinType:'Debet',OperationType:'Продажа'}));
+      return vFinOperation;    
+    } else return false;  
 };
