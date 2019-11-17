@@ -75,8 +75,7 @@ BitGanjPoint.prototype.setNewState = function (pEntry) {
                     }
             } else { this.changeState(pEntry, vNewState);}
             break;
-         case 'Lost':
-            break;
+
          case 'Published':
             this.updatePoint(pEntry); 
           default:
