@@ -61,9 +61,7 @@ BitGanjLibraries.prototype.refreshLibraryEntry = function(vEntry)
                     this.processPoint(cEntry);
                     break;
                 case 'Lost':                    
-                    vSaledAmount = vSaledAmount + cEntry.field('TotalPrice');
                     vSaledWeight = vSaledWeight + cEntry.field('TotalWeight');
-                    this.processPoint(cEntry);
                     break;
                 default: 
                 break;
