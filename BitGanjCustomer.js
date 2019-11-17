@@ -82,7 +82,6 @@ BitGanjCustomer.prototype.refreshCustomerEntry = function(vCustomerEntry)
           log(vResult.body);
           var json = JSON.parse(vResult.body);
           var vRegDate = moment(json.Registered);
-          var vLastDate = moment(json.LastOrderDate);
           var vIsNew = json.TotalOrdersCount > 0 ? false : true;
           vCustomerEntry.set("RegistrationDate",vRegDate.add( this.timeshift , 'hours').toDate());
           vCustomerEntry.set("CustomerId", json.idCustomer);
@@ -93,9 +92,12 @@ BitGanjCustomer.prototype.refreshCustomerEntry = function(vCustomerEntry)
           vCustomerEntry.set("Description", JSON.stringify(json.userIdentifiers));
           vCustomerEntry.set("Bonuses", json.Balance );
           vCustomerEntry.set("isNewCustomer", vIsNew );
-          vCustomerEntry.set("LastUpdate", moment());
+          vCustomerEntry.set("LastUpdate", moment().toDate());
           if ( !vIsNew ) {
-            vCustomerEntry.set("LastOrderDate",vLastDate.add( this.timeshift , 'hours').toDate());
+            var vLastDate = moment(json.LastOrderDate);
+            if (vLastDate.isValid()) {
+                vCustomerEntry.set("LastOrderDate",vLastDate.add( this.timeshift , 'hours').toDate());    
+                };
           };
           log(JSON.stringify(json.userIdentifiers));
           vResult = true;
