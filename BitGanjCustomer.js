@@ -93,6 +93,7 @@ BitGanjCustomer.prototype.refreshCustomerEntry = function(vCustomerEntry)
           vCustomerEntry.set("Description", JSON.stringify(json.userIdentifiers));
           vCustomerEntry.set("Bonuses", json.Balance );
           vCustomerEntry.set("isNewCustomer", vIsNew );
+          vCustomerEntry.set("LastUpdate", moment());
           if ( !vIsNew ) {
             vCustomerEntry.set("LastOrderDate",vLastDate.add( this.timeshift , 'hours').toDate());
           };
