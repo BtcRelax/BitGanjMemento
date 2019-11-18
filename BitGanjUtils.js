@@ -17,7 +17,7 @@ BitGanjUtils.prototype.getLibByName = function(pName) {
 BitGanjUtils.prototype.getVersion = function () {
   var vResult= false;
   try {
-      var result = http().get("https://" + this.server + "/api/Info?");
+      var result = http().get("https://" + this.server + "/api/Info?action=getver");
       if (result.code === 200) {
         var vGetVerResult = JSON.parse(result.body);
         vResult = vGetVerResult.Core;
