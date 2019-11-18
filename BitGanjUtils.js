@@ -17,7 +17,10 @@ BitGanjUtils.prototype.getLibByName = function(pName) {
 BitGanjUtils.prototype.getVersion = function () {
   var vResult= false;
   try {
-      var result = http().get("https://" + this.server + "/api/Info?action=getver");
+      var query = "https://" + this.server + "/api/Info?action=getver";
+      log(query);
+      var result = http().get(query); 
+      log(result.body);
       if (result.code === 200) {
         var vGetVerResult = JSON.parse(result.body);
         vResult = vGetVerResult.Core;
@@ -33,7 +36,10 @@ BitGanjUtils.prototype.getVersion = function () {
 BitGanjUtils.prototype.getProxiesList = function() {
   var vResult= false;
   try {
-      var result = http().get("https://www.proxy-list.download/api/v1/get?country=UA&type=http");
+      var query = "https://www.proxy-list.download/api/v1/get?country=UA&type=http";
+      log(query);
+      var result = http().get(query);
+      log(result.body);
       if (result.code === 200) {
         var vProxies = JSON.parse(result.body);
         vResult = vProxies;
