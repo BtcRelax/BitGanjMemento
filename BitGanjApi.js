@@ -1,6 +1,12 @@
 // Public methods
 // {Points} operaions
 
+function updateCustomerBanState(pServer,pEntry) {
+    var vCe = pEntry !== undefined ? pEntry : entry();
+    var vApi = new BitGanjCustomer(pServer);
+    vApi.setUserBan(pEntry);
+}
+
 function checkCustomerInfo(pServer, pCustomerId) {
      var vCustApi = new BitGanjCustomer(pServer);
      var isExists = vCustApi.isExists(pCustomerId);

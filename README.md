@@ -2,17 +2,23 @@
 
 Define object for communicate from libraries into MementoDatabase to BtcRelax system.
 
-For productive recomended to use, quick files:
-refreshAllPubs.js;
-refreshPub.js;
-
 Main documentation : http://wiki.mementodatabase.com/index.php/Memento_JavaScript_Library
 
 For Library:
-[S]Hosts - Add Entry action: SyncVersions()
+--------- [S]Customers - set next actions:
+Trigger after update:
+updateCustomerBanState('shop.fastfen.club');
+
+ -------- [S]Products ---------- 
+Add Entry action: SetProductState()
+For refresh item state: GetProductState()
+For refresh all library: SyncProducts()
+Add trigger after open: GetProductState()
+
+
 
 MyLibrarys - library for control each deal.
-    RefreshLibrary - method, to collect info about actual library.
+RefreshLibrary - method, to collect info about actual library.
 
 [S]Points - Library action: 
             SyncLybrary();
@@ -20,8 +26,4 @@ MyLibrarys - library for control each deal.
             Trigger, after open: GetState();
             Trigger, after update: UpdatePoint();
 
- -------- [S]Products ---------- 
-Add Entry action: SetProductState()
-For refresh item state: GetProductState()
-For refresh all library: SyncProducts()
-Add trigger after open: GetProductState()
+

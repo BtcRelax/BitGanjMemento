@@ -6,21 +6,19 @@ function BitGanjCustomer(v_server, v_timeShift) {
     this.currentEnitity = null;
   }
 
-  BitGanjCustomer.prototype.updateCustomerInfoById = function (vId) {
+BitGanjCustomer.prototype.updateCustomerInfoById = function (vId) {
       var vCustomerEntry = this.getCustomerEntryById(vId);
       this.refreshCustomerEntry(vCustomerEntry);
-  };
+};
 
-   BitGanjCustomer.prototype.isExists = function (pId) {
+BitGanjCustomer.prototype.isExists = function (pId) {
         var query = "https://" + this.server + "/api/User?action=getinfo&id=" + pId ;
         log(query);
         var vResult = http().get(query);
         return Result.code === 200  ? true: false;
-   }
+}
   
-
-  BitGanjCustomer.prototype.getCustomerLib = function()
-  {
+BitGanjCustomer.prototype.getCustomerLib = function() {
     var res = false;
     var count =this.customerLibs.length;
     for (i=0;i<count;i++)
@@ -32,12 +30,9 @@ function BitGanjCustomer(v_server, v_timeShift) {
       }
     }
     return res;
-  };
+}
   
-  
-
-  BitGanjCustomer.prototype.getCustomerEntryById = function(vCustomerId)
-  {
+BitGanjCustomer.prototype.getCustomerEntryById = function(vCustomerId) {
     var vResult = false;
     if(vCustomerId === null || vCustomerId === '')
     {
@@ -65,12 +60,24 @@ function BitGanjCustomer(v_server, v_timeShift) {
             } else { message("У Вас, не скачанна библиотека [S]Customers!"); }        
     }
     return vResult;
-  } 
+} 
 
 
+BitGanjCustomer.prototype.setUserBan = function(vCustomerEntry){
+    var vResult = false;
+    var pId = vCustomerEntry.field("CustomerId");
+    var vIsBan = vCustomerEntry.field("isBaned");
+    var query = "https://" + this.server + "/api/User?action=setbanned&id=" + pId + "&banned=" + vIsBan; 
+    log(query);
+    var vResult = http().get(query);
+    if (vResult.code === 200) {
+          log(vResult.body);
+          vResult = this.refreshCustomerEntry(vCustomerEntry);
+    }
+    return vResult;
+}
 
-BitGanjCustomer.prototype.refreshCustomerEntry = function(vCustomerEntry)
-  {
+BitGanjCustomer.prototype.refreshCustomerEntry = function(vCustomerEntry) {
     var vResult = false;
     var pId = vCustomerEntry.field("CustomerId");
     log("refreshCustomerEntry with id:" + pId);
@@ -104,6 +111,6 @@ BitGanjCustomer.prototype.refreshCustomerEntry = function(vCustomerEntry)
         }
     }
     return vResult;
-};
+}
 
 
