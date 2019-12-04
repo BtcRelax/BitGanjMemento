@@ -43,10 +43,10 @@ BitGanjCustomer.prototype.getCustomerEntryById = function(vCustomerId) {
         var vO  = this.getCustomerLib();
           if (vO) {
     		    var vCust = vO.find(vCustomerId);
-    		    switch (vCust.length) {
+    		    var vFounded = vCust.length;
+    		    switch (vFounded) {
                     case 0:
-                        var newCustomer = new Object({CustomerId:vCustomerId}); 
-                        vResult = vO.create(newCustomer); 
+                        vResult = this.createCustomer(vCustomerId); 
                         log('Customer entry created! Id:' + vCustomerId);
                         break;
                       case 1:
@@ -54,7 +54,20 @@ BitGanjCustomer.prototype.getCustomerEntryById = function(vCustomerId) {
                         log('Customer entry founded! Id:' + vCustomerId );
                         break;
                     default:
-                        message("В библиотеке [S]Customers нарушение уникальности данных! Id:" + vCustomerId);   
+                        log ("Search for CustomerId:" + vCustomerId + " founded " + vFounded );
+                        for (var i=0 ; i < vFounded ; i++) {
+                            var cCust = vCust[i];                        
+                              if (!cCust.deleted) {
+                                 	if (cCust.field("CustomerId") === vCustomerId) {
+                                    vResult = cCust;
+                                };                        
+    
+                             }
+	                    };
+                        if (vResult === false) {
+                             log("Customer id: " + vCustomerId + " not found after search. And will be created now."); 
+                             vResult = this.createCustomer(vCustomerId); 
+                        }
                         break;
     		        }
             } else { message("У Вас, не скачанна библиотека [S]Customers!"); }        
@@ -62,6 +75,12 @@ BitGanjCustomer.prototype.getCustomerEntryById = function(vCustomerId) {
     return vResult;
 } 
 
+
+BitGanjCustomer.prototype.createCustomer = function(vId) {
+    var vO  = this.getCustomerLib();
+    var newCustomer = new Object({CustomerId:vId}); 
+    return vO.create(newCustomer);
+}
 
 BitGanjCustomer.prototype.setUserBan = function(vCustomerEntry){
     var vResult = false;
