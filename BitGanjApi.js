@@ -115,16 +115,16 @@ function GetCustomerInfo(pServer, pEntry) {
     if (vCustomerEntry) { vCustomerEntry.show(); } 
 }
 
-function SetState(pServer,pEntry) {
+function SetState(pServer,pEntry,pTimeShift) {
   var vEntry = pEntry !== undefined ? pEntry : entry();
-  var vApi = new BitGanjPoint(pServer);
+  var vApi = new BitGanjPoint(pServer, null, pTimeShift);
   vApi.setNewState(vEntry);
 }
 
 
-function GetState(pServer,pEntry) {
+function GetState(pServer,pEntry, pTimeShift) {
   var vEntry = pEntry !== undefined ? pEntry : entry();
-  var vApi = new BitGanjPoint(pServer);
+  var vApi = new BitGanjPoint(pServer, null, pTimeShift);
   vApi.getPointState(vEntry);
 }
 
