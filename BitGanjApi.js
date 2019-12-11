@@ -47,20 +47,20 @@ function refreshProxies() {
     var vA = new BitGanjUtils();
     var vL = vA.getProxiesList();
     log(vL);
-    
+
 }
 
-function RefreshLibraries(pServer) {
+function RefreshLibraries(pServer, pTimeShift) {
     var vL = lib();
     var vEntrs = vL.entries();
     var count = vEntrs.length;
     for (var i = 0; i < count; i++) {
-	var cL = vEntrs[i];
-    	if ((cL.field("Status") === 'InProgress') || (cL.field("Status") === 'NotStarted') ) 
+	var cLibrary = vEntrs[i];
+    	if ((cLibrary.field("Status") === 'InProgress') || (cLibrary.field("Status") === 'NotStarted') )
     	{
-    		RefreshLibrary(pServer, cL);
+    		RefreshLibrary(pServer, cLibrary, pTimeShift);
     	}
-    }        
+    }
 }
 
 function OpenLibrary(pServer, vEntry) {
@@ -69,9 +69,9 @@ function OpenLibrary(pServer, vEntry) {
     vApi.openLibraryEntry(vCe);
 }
 
-function RefreshLibrary(pServer, vEntry) {
+function RefreshLibrary(pServer, vEntry, pTimeShift) {
     var vCe = vEntry !== undefined ? vEntry : entry();
-    var vApi = new BitGanjLibraries(pServer);
+    var vApi = new BitGanjLibraries(pServer, pTimeShift);
     vApi.refreshLibraryEntry(vCe);
     if (vApi.isAllSaled) {
         vCe.set("Status","Sailed");
@@ -83,20 +83,20 @@ function SyncLibrary(pServer) {
   var cLib = lib();
   var entries = cLib.entries();
   var count = entries.length;
-  var vApi = new BitGanjPoint(pServer); 
+  var vApi = new BitGanjPoint(pServer);
   for (var i = 0; i < count; i++) {
        var cEntry = entries[i];
        var cId = cEntry.field("BookmarkId");
        try {
             if ((cEntry.field("Status") !== "Catched") || (cEntry.field("Status") !== "Lost")
             || cEntry.field("Status") !== "Created")  {
-                vApi.getPointState(cEntry); 
+                vApi.getPointState(cEntry);
             }
        } catch (err) {
           message("Error update info about point:" + cId);
           message("Error message:" + err.message);
        }
-    message("Process:" + i + " of " + count); 
+    message("Process:" + i + " of " + count);
   }
   var vResultMsg = 'Registered:' + vApi.registered + '\n Saled:' + vApi.saled + '\n Catched:' + vApi.catched;
   message(vResultMsg);
@@ -105,14 +105,14 @@ function SyncLibrary(pServer) {
 function CancelOrder(pServer,pEntry) {
     var vEntry = pEntry !== undefined ? pEntry : entry();
     var vApi = new BitGanjPoint(pServer);
-    vApi.tryToCancelOrder(vEntry);  
+    vApi.tryToCancelOrder(vEntry);
 }
 
 function GetCustomerInfo(pServer, pEntry) {
     var vEntry = pEntry !== undefined ? pEntry : entry();
     var vApi = new BitGanjPoint(pServer);
     var vCustomerEntry =  vApi.tryToGetOrderClientInfo(vEntry);
-    if (vCustomerEntry) { vCustomerEntry.show(); } 
+    if (vCustomerEntry) { vCustomerEntry.show(); }
 }
 
 function SetState(pServer,pEntry,pTimeShift) {
@@ -183,7 +183,7 @@ function SyncVersions() {
   }
 }
 
-/// Global 
+/// Global
 function setAuthor(pEntry) {
   var cE = pEntry !== undefined ? pEntry : entry();
   var vAuth = cE.author;
@@ -214,13 +214,13 @@ function RefreshCustomers(pServer) {
         for (var ent = 0; ent < pEs.length; ent++) {   // Loop through all entries
             RefreshCustomer(pServer, pEs[ent]);
         }
-    } else { message("У Вас, не скачанна библиотека [S]Customers!"); }  
+    } else { message("У Вас, не скачанна библиотека [S]Customers!"); }
 }
 
 function LinkningToCustomer(pServer,pEntry) {
   var vEntry = pEntry !== undefined ? pEntry : entry();
-  var vCustomerId = vEntry.field("CustomerId");    
-  var vCustomerLink = vEntry.field("LinkedCustomer");  
+  var vCustomerId = vEntry.field("CustomerId");
+  var vCustomerLink = vEntry.field("LinkedCustomer");
   var vBGCust = new BitGanjCustomer(pServer);
   var vCustomerEntry = vBGCust.getCustomerEntryById(vCustomerId);
   if ((vCustomerLink.length === 0) && (vCustomerLink !== false))  {
@@ -245,14 +245,14 @@ function RefreshInvoices(pServer) {
        for (var ent = 0; ent < pEs.length; ent++) {   // Loop through all entries
             RefreshInvoice(pServer, pEs[ent]);
         }
-    } else { message("У Вас, не скачанна библиотека [S]Invoice!"); }  
+    } else { message("У Вас, не скачанна библиотека [S]Invoice!"); }
 }
 
 function LinkningToInvoice(pEntry) {
   var vEntry = pEntry !== undefined ? pEntry : entry();
-  var vInvoiceId = vEntry.field("InvoiceId");    
+  var vInvoiceId = vEntry.field("InvoiceId");
   if (Number.isInteger(vInvoiceId))  {
-  	var vInvoiceLink = vEntry.field("InvoiceLink");  
+  	var vInvoiceLink = vEntry.field("InvoiceLink");
   	var vBGInvoice = new BitGanjInvoice();
   	var vInvoiceEntry = vBGInvoice.getInvoiceEntryById(vInvoiceId);
   	if ((vInvoiceLink.length === 0) && (vInvoiceLink !== false))  {
@@ -261,7 +261,7 @@ function LinkningToInvoice(pEntry) {
   } else { vEntry.set("InvoiceLink", null); }
 }
 
-/// For Orders library 
+/// For Orders library
 function RefreshOrder(pServer, pEntry) {
    var vEntry = pEntry !== undefined ? pEntry : entry();
    var vBGOrder = new BitGanjOrder(pServer);
@@ -269,7 +269,7 @@ function RefreshOrder(pServer, pEntry) {
 }
 
 function RefreshOrders(pServer) {
-    var vBGOrder = new BitGanjOrder(pServer);    
+    var vBGOrder = new BitGanjOrder(pServer);
     var ordersLib = vBGOrder.getOrderLib();
     var pRealMaxId = vBGOrder.getMaxId();
 	var msg = "Real server max order id is:" + pRealMaxId;
@@ -279,8 +279,8 @@ function RefreshOrders(pServer) {
        var pEs = ordersLib.entries();
         for (var ent = 0; ent < pEs.length; ent++) {   // Loop through all entries
             var cEnt = pEs[ent];
-            if (cEnt.field("OrderId") > pMaxId) 
-            { pMaxId =  cEnt.field("OrderId"); 
+            if (cEnt.field("OrderId") > pMaxId)
+            { pMaxId =  cEnt.field("OrderId");
               log("Max Order Id set to:" + pMaxId); }
             try {
                 var vState = cEnt.field("OrderState");
@@ -294,7 +294,7 @@ function RefreshOrders(pServer) {
 	        }
 	   }
 	   if (pRealMaxId > pMaxId) {
-        var vLen = pRealMaxId - pMaxId;              
+        var vLen = pRealMaxId - pMaxId;
 	        for (var i = 1; i <= vLen ; i++) {
 	               var vNewOrderId = pMaxId + i;
 	               if (vBGOrder.isOrderExist(vNewOrderId)) {
@@ -304,17 +304,17 @@ function RefreshOrders(pServer) {
 	               }
 	            }
 	        }
-    } else { message("У Вас, не скачанна библиотека [S]Orders!"); }  
+    } else { message("У Вас, не скачанна библиотека [S]Orders!"); }
 }
 
 function LinkningToOrder(pEntry) {
   var vEntry = pEntry !== undefined ? pEntry : entry();
-  var vOrderId = vEntry.field("OrderId");    
+  var vOrderId = vEntry.field("OrderId");
   if (Number.isInteger(vOrderId))  {
-  	var vOrderLink = vEntry.field("OrderLink");  
+  	var vOrderLink = vEntry.field("OrderLink");
   	var vBGOrder = new BitGanjOrder();
   	var vOrderEntry = vBGOrder.getOrderEntryById(vOrderId);
-  	if ((vOrderLink.length === 0) && (vOrderEntry !== false))  
+  	if ((vOrderLink.length === 0) && (vOrderEntry !== false))
   	{ vEntry.set("OrderLink", vOrderEntry); }
   }
 }
