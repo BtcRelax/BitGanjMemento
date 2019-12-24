@@ -173,7 +173,8 @@ function SyncVersions() {
     var vAPI = new BitGanjUtils(vHost);
     var v = vAPI.getVersion();
     if (v !== false) {
-        cEntry.set("responce", v);
+        cEntry.set("responce", v.Core);
+        cEntry.set("php",v.PHP);
         cEntry.set("isActive", true);
     } else {
         cEntry.set("isActive", false);

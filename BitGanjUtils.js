@@ -23,7 +23,7 @@ BitGanjUtils.prototype.getVersion = function () {
       log(result.body);
       if (result.code === 200) {
         var vGetVerResult = JSON.parse(result.body);
-        vResult = vGetVerResult.Core;
+        vResult = vGetVerResult;
       }      
   }
   catch (err) {
