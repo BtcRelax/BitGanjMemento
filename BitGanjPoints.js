@@ -229,7 +229,7 @@ BitGanjPoint.prototype.registerPoint = function (pEntry) {
 
 BitGanjPoint.prototype.updatePoint = function (pEntry) {
   var vStateStart = pEntry.field("Status");
-  if (vStateStart === 'Preparing') {
+  if ((vStateStart === 'Preparing') || (vStateStart === 'Saled')) {
     var auth = pEntry.author;
     var vLink = pEntry.field("URLToPhoto");
     var vDescr = pEntry.field("Description");
