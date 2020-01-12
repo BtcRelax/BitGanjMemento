@@ -67,6 +67,19 @@ BitGanjPoint.prototype.setNewState = function (pEntry) {
       switch (vNewState) {
           case 'Preparing':
             if (cId === null && cIsSent === false) {
+                if ((vCurrentState === 'Created') && (pEntry.field("OrderLink").length > 0) && (Number.isInteger(pEntry.field("OrderId"))=== false))
+                {
+                  var vOrders = pEntry.field("OrderLink");
+                  var count = vOrders.length;
+                  for (i = 0; i < count; i++) {
+                      var vOrderEntry = vOrders[i];
+                      if ((vOrderEntry.field("OrderState")==='Paid') && (vOrderEntry.field("isHasLosts")>0) )  {
+                          var vOrderId = vOrderEntry.field("OrderId");
+                          pEntry.set("OrderId", vOrderId);
+                          break;
+                      }
+                  }
+                }
                 var vRes =  this.registerPoint(pEntry);        
                 if (vRes) {
                     pEntry.set("DropDate", vM.toDate());
@@ -173,7 +186,9 @@ BitGanjPoint.prototype.registerPoint = function (pEntry) {
       var price = pEntry.field('TotalPrice');
       var title = this.getAdvertiseTitle(pEntry);
       log(title);
-      var params = encodeURIComponent('[{"title":"' + title + '","price":' + price +
+      var vOrder = "";  
+      if (Number.isInteger(pEntry.field(OrderId))) { vOrder = '","orderid":' + pEntry.field(OrderId) };
+      var params = encodeURIComponent('[{"title":"' + title + '","price":' + price + vOrder +
         ',"location":{"latitude":' + loc.lat + ',"longitude":' + loc.lng + '}}]');
       var vURI = "https://" + this.server + "/api/Bookmark?action=CreateNewPoint&author=" + auth + "&params=" + params;
       log(vURI);
@@ -342,15 +357,15 @@ BitGanjPoint.prototype.setOrderToPoint = function (pEntry, pOrder) {
       	else {  var isExists = false;
   	             if (vOrderLink.length > 0) 
   	             {
-  	                 var count = vOrderLink.length;
+  	                var count = vOrderLink.length;
                     for (i = 0; i < count; i++) {
                     var cEntry = vOrderLink[i];
                     if (cEntry.field("OrderId") === vOrderEntry.field("OrderId")) {
                         isExists = true;
-                    break;
-                }
-  	         }
-  	    }
+                        break;
+                      }
+  	                }
+  	              }
   	    if (!isExists) { pEntry.link("OrderLink",vOrderEntry);}
    	};
  };
