@@ -235,7 +235,9 @@ BitGanjPoint.prototype.updatePoint = function (pEntry) {
     var vDescr = pEntry.field("Description");
     var vPointId = pEntry.field("BookmarkId");
     var vRegionTitle = this.getRegionTitle(pEntry);
-    var params = encodeURIComponent('[{"region":"' + vRegionTitle + '","link":"' + vLink + '","description":"' + vDescr + '"}]');
+    var price = pEntry.field('TotalPrice');
+    var title = this.getAdvertiseTitle(pEntry);
+    var params = encodeURIComponent('[{"title":"' + title + '","price":' + price + '","region":"' + vRegionTitle + '","link":"' + vLink + '","description":"' + vDescr + '"}]');
     var vRequest = "https://" + this.server + "/api/Bookmark?action=UpdatePoint&author=" + auth + "&bookmarkId=" + vPointId + "&params=" + params;
     log(vRequest);
     var vResult = http().get(vRequest);
