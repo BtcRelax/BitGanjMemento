@@ -237,7 +237,7 @@ BitGanjPoint.prototype.updatePoint = function (pEntry) {
     var vRegionTitle = this.getRegionTitle(pEntry);
     var price = pEntry.field('TotalPrice');
     var title = this.getAdvertiseTitle(pEntry);
-    var params = encodeURIComponent('[{"title":"' + title + '","price":' + price + '","region":"' + vRegionTitle + '","link":"' + vLink + '","description":"' + vDescr + '"}]');
+    var params = encodeURIComponent('[{"title":"' + title + '","price":' + price + ',"region":"' + vRegionTitle + '","link":"' + vLink + '","description":"' + vDescr + '"}]');
     var vRequest = "https://" + this.server + "/api/Bookmark?action=UpdatePoint&author=" + auth + "&bookmarkId=" + vPointId + "&params=" + params;
     log(vRequest);
     var vResult = http().get(vRequest);
@@ -258,7 +258,7 @@ BitGanjPoint.prototype.updatePoint = function (pEntry) {
       } else {
       message(vResult.code);
     }
-  }
+  } else { message ("Point can be updated at server, only in Preparing or Saled state!")}
 };
 
 BitGanjPoint.prototype.setPointState = function (pEntry, pState) {
