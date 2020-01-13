@@ -187,7 +187,7 @@ BitGanjPoint.prototype.registerPoint = function (pEntry) {
       var title = this.getAdvertiseTitle(pEntry);
       log(title);
       var vOrder = "";  
-      if (Number.isInteger(pEntry.field("OrderId"))) { vOrder = '","orderid":' + pEntry.field("OrderId") };
+      if (Number.isInteger(pEntry.field("OrderId"))) { vOrder = ',"orderid":' + pEntry.field("OrderId") };
       var params = encodeURIComponent('[{"title":"' + title + '","price":' + price + vOrder +
         ',"location":{"latitude":' + loc.lat + ',"longitude":' + loc.lng + '}}]');
       var vURI = "https://" + this.server + "/api/Bookmark?action=CreateNewPoint&author=" + auth + "&params=" + params;
