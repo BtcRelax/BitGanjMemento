@@ -91,29 +91,31 @@ BitGanjLibraries.prototype.refreshLibraryEntry = function(vEntry)
 
 BitGanjLibraries.prototype.processPoint = function(pEntry) {
     var vOrderId = pEntry.field("OrderId"); 
-    log ( "Processing point with order id:" + vOrderId );
-    var vOrderApi = new BitGanjOrder(this.server,this.timeshift);
-    var vOrder = vOrderApi.getOrderEntryById(vOrderId);
-    var vInvoice = vOrder.field("LinkedInvoice")[0];
-    var vInvoiceState = vInvoice.field("InvoiceState");
-    var vInvoiceId = vInvoice.field("InvoiceId");
-    var vFinOperationsCount = vInvoice.field("isHasFinoperation");
-    log ("Order id:" + vOrderId + " was found. And have invoice id: " + vInvoiceId + " with state"  + vInvoiceState + " and fin operations:" + vFinOperationsCount);
-    if (((vInvoiceState === "Payed") || (vInvoiceState === "OverPay")) && vFinOperationsCount === false ){
-                        var vFinOperationEntry = this.createFinOperation();                              
-                        if (vFinOperationEntry != false) {
-                           message("Create fin operation for invoice id:" + vInvoiceId );                                                                  
-                           var vAmount = vInvoice.field("BalanceDelta");
-                           var vFODate = vInvoice.field("InvoiceEndDate");
-                           vFinOperationEntry.set("Date", vFODate);
-                           vFinOperationEntry.set("Amount",vAmount);
-                           vFinOperationEntry.set("Invoice",vInvoice);
-                           vInvoice.set("isHasFinoperation",1);    
-                           vFinOperationEntry.recalc();
-                           this.addFinOperation(vFinOperationEntry);
-                        }
-        }                                   
-}; 
+    if (Number.isInteger(vOrderId)) {
+	    log ( "Processing point with order id:" + vOrderId );
+	    var vOrderApi = new BitGanjOrder(this.server,this.timeshift);
+	    var vOrder = vOrderApi.getOrderEntryById(vOrderId);
+	    var vInvoice = vOrder.field("LinkedInvoice")[0];
+	    var vInvoiceState = vInvoice.field("InvoiceState");
+	    var vInvoiceId = vInvoice.field("InvoiceId");
+	    var vFinOperationsCount = vInvoice.field("isHasFinoperation");
+	    log ("Order id:" + vOrderId + " was found. And have invoice id: " + vInvoiceId + " with state"  + vInvoiceState + " and fin operations:" + vFinOperationsCount);
+	    if (((vInvoiceState === "Payed") || (vInvoiceState === "OverPay")) && vFinOperationsCount === false ){
+	                        var vFinOperationEntry = this.createFinOperation();                              
+	                        if (vFinOperationEntry !== false) {
+	                           message("Create fin operation for invoice id:" + vInvoiceId );                                                                  
+	                           var vAmount = vInvoice.field("BalanceDelta");
+	                           var vFODate = vInvoice.field("InvoiceEndDate");
+	                           vFinOperationEntry.set("Date", vFODate);
+	                           vFinOperationEntry.set("Amount",vAmount);
+	                           vFinOperationEntry.set("Invoice",vInvoice);
+	                           vInvoice.set("isHasFinoperation",1);    
+	                           vFinOperationEntry.recalc();
+	                           this.addFinOperation(vFinOperationEntry);
+	                        }
+	        }                                   
+    }
+    }; 
 
 BitGanjLibraries.prototype.addFinOperation = function(vNewFinOperation){
     var vFinCollection = this.currentLibrary.field('FinOps');
