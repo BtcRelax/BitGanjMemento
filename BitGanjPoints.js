@@ -1,6 +1,6 @@
 /*eslint-disable no-undef, no-undef, no-undef*/
 function BitGanjPoint(v_server, v_tokenKey, v_timeShift) {
-  this.server = v_server !== undefined ? v_server : 'test.bitganj.website';
+  this.server = v_server !== undefined ? v_server : 'tnf.fastfen.club';
   this.tokenKey = v_tokenKey !== null ? v_tokenKey : null;
   this.registered = 0;
   this.saled = 0;
@@ -42,7 +42,6 @@ BitGanjPoint.prototype.tryToGetOrderClientInfo = function (pEntry) {
     }
 };
 
-
 BitGanjPoint.prototype.LinkningToOrder = function (pEntry) {
   var vEntry = pEntry !== undefined ? pEntry : entry();
   var vOrderId = vEntry.field("OrderId");    
@@ -55,7 +54,6 @@ BitGanjPoint.prototype.LinkningToOrder = function (pEntry) {
   	}
   }
 };
-
 
 BitGanjPoint.prototype.setNewState = function (pEntry) {
   var vNewState = arg('NewState');
@@ -119,7 +117,6 @@ BitGanjPoint.prototype.changeState = function (pEntry, vNewState) {
             }
 };
 
-
 BitGanjPoint.prototype.getRegionTitle = function (pEntry) {
   var cReg = pEntry.field("Region");
   var vRegCounts = cReg.length;
@@ -172,8 +169,13 @@ BitGanjPoint.prototype.getAdvertiseTitle = function (pEntry) {
 
 BitGanjPoint.prototype.getProductJson  = function (pEntry) {
   var vP = pEntry.field('Product')[0];
-  var res = encodeURIComponent('{\"ProductId\":' + vP.field("ProductId") + ',\"Title\":\" - ' + pEntry.field('AdvertiseTitle') + '\"}'); 
-  return res;
+  var res = '{\"ProductId\":' + vP.field("ProductId") + ',\"Title\":\"';
+  if (pEntry.field("AdvertiseTitle") == '') {
+		var ty=field("CountType");
+		if (ty==='weigth') { res = res + ' -'+pEntry.field("Weight")+' грамм'} 
+		else { res = res +' -'+pEntry.field("Quantity")+' шт.'};
+	} else { res = res + ' -' + pEntry.field("AdvertiseTitle") };
+  return encodeURIComponent(res + '\"}' );
 };
 
 BitGanjPoint.prototype.registerPoint = function (pEntry) {
