@@ -171,7 +171,11 @@ BitGanjPoint.prototype.getProductJson  = function (pEntry) {
   var vP = pEntry.field('Product')[0];
   var res = '{\"ProductId\":' + vP.field("ProductId") + ',\"Title\":\"';
   if (pEntry.field("AdvertiseTitle") == '') {
+<<<<<<< HEAD
 		var ty=field("CountType");
+=======
+		var ty=pEntry.field("CountType");
+>>>>>>> dfd9c00a0983476d9cca0e6621b734c326b6f38a
 		if (ty==='weigth') { res = res + ' -'+pEntry.field("Weight")+' грамм'} 
 		else { res = res +' -'+pEntry.field("Quantity")+' шт.'};
 	} else { res = res + ' -' + pEntry.field("AdvertiseTitle") };
