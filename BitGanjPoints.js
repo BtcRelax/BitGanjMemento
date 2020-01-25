@@ -37,7 +37,7 @@ BitGanjPoint.prototype.tryToGetOrderClientInfo = function (pEntry) {
   	    var vIdCustomer = vOrderEntry.field("CustomerId");
   	    var vBGCust = new BitGanjCustomer(this.server, this.timeshift);
   	    var vCustEntry = vBGCust.getCustomerEntryById(vIdCustomer);
-        if (vCustEntry) {vBGCust.refreshCustomerEntry(vCustEntry); };
+        if (vCustEntry) {vBGCust.refreshCustomerEntry(vCustEntry); }
         return vCustEntry;
     }
 };
@@ -86,15 +86,24 @@ BitGanjPoint.prototype.setNewState = function (pEntry) {
                     }
             } else { this.changeState(pEntry, vNewState);}
             break;
-
          case 'Published':
             this.updatePoint(pEntry); 
-          default:
+        	this.changeState(pEntry, vNewState);
+        	break;
+         case 'Catched':
+         	if (vCurrentState === 'Created') {
+         		// Manual sale, so need to create finoperation by hands
+         		message("Manual operation");
+         	} else { this.changeState(pEntry, vNewState); }
+         	break;
+         default:
             this.changeState(pEntry, vNewState);
             break;
         }
-      pEntry.set("Status", vNewState);
-      pEntry.set("StatusChanged", vM.toDate());
+      if (pEntry.field("isError") !== true) {
+	      //pEntry.set("Status", vNewState);
+    	  pEntry.set("StatusChanged", vM.toDate());
+      } else { message("State not changed! Because error happend."); }
     } else { message("Point already in that state!"); }
 };
 
@@ -107,7 +116,7 @@ BitGanjPoint.prototype.changeState = function (pEntry, vNewState) {
             if (vResult.code === 200) {
               var json = JSON.parse(vResult.body);
               if (json.BookmarkResult === true) {
-                json.BookmarkState.bookmarkState;
+                pEntry.set("Status", json.BookmarkState.bookmarkState);
                 pEntry.set("ServerError", "");
                 pEntry.set("isError", false);
               } else {
@@ -170,15 +179,11 @@ BitGanjPoint.prototype.getAdvertiseTitle = function (pEntry) {
 BitGanjPoint.prototype.getProductJson  = function (pEntry) {
   var vP = pEntry.field('Product')[0];
   var res = '{\"ProductId\":' + vP.field("ProductId") + ',\"Title\":\"';
-  if (pEntry.field("AdvertiseTitle") == '') {
-<<<<<<< HEAD
-		var ty=field("CountType");
-=======
+  if (pEntry.field("AdvertiseTitle") === '') {
 		var ty=pEntry.field("CountType");
->>>>>>> dfd9c00a0983476d9cca0e6621b734c326b6f38a
-		if (ty==='weigth') { res = res + ' -'+pEntry.field("Weight")+' грамм'} 
-		else { res = res +' -'+pEntry.field("Quantity")+' шт.'};
-	} else { res = res + ' -' + pEntry.field("AdvertiseTitle") };
+		if (ty==='weigth') { res = res + ' -'+pEntry.field("Weight")+' грамм'; } 
+		else { res = res +' -'+pEntry.field("Quantity")+' шт.'; }
+	} else { res = res + ' -' + pEntry.field("AdvertiseTitle"); }
   return encodeURIComponent(res + '\"}' );
 };
 
@@ -193,7 +198,7 @@ BitGanjPoint.prototype.registerPoint = function (pEntry) {
       var title = this.getAdvertiseTitle(pEntry);
       log(title);
       var vOrder = "";  
-      if (Number.isInteger(pEntry.field("OrderId"))) { vOrder = ',"orderid":' + pEntry.field("OrderId") };
+      if (Number.isInteger(pEntry.field("OrderId"))) { vOrder = ',"orderid":' + pEntry.field("OrderId"); }
       var params = encodeURIComponent('[{"title":"' + title + '","price":' + price + vOrder +
         ',"location":{"latitude":' + loc.lat + ',"longitude":' + loc.lng + '}}]');
       var vURI = "https://" + this.server + "/api/Bookmark?action=CreateNewPoint&author=" + auth + "&params=" + params;
@@ -264,7 +269,7 @@ BitGanjPoint.prototype.updatePoint = function (pEntry) {
       } else {
       message(vResult.code);
     }
-  } else { message ("Point can be updated at server, only in Preparing or Saled state!")}
+  } else { message ("Point can be updated at server, only in Preparing or Saled state!");}
 };
 
 BitGanjPoint.prototype.setPointState = function (pEntry, pState) {
@@ -347,9 +352,9 @@ BitGanjPoint.prototype.getPointState = function (pEntry) {
                } else {
     	           message("Error while refresh, point Id:" + cId );
     	           message("Error message:" + vErrorMessage);                   
-               };
-	};    
-    };
+               }
+	}    
+    }
 };
 
 BitGanjPoint.prototype.setOrderToPoint = function (pEntry, pOrder) {
@@ -360,7 +365,7 @@ BitGanjPoint.prototype.setOrderToPoint = function (pEntry, pOrder) {
   	var vBGInvoice = new BitGanjInvoice(this.server, this.timeshift);
   	var vInvoice = pOrder.invoice;
     var vInvoiceEntry = vBGInvoice.updateInvoiceEntry(vInvoice);
-    if (vOrderEntry && vInvoiceEntry) { vOrderEntry.set("LinkedInvoice", vInvoiceEntry); };
+    if (vOrderEntry && vInvoiceEntry) { vOrderEntry.set("LinkedInvoice", vInvoiceEntry); }
   	if ((vOrderLink.length === 0) && (vOrderEntry !== false))  { pEntry.set("OrderLink", vOrderEntry); } 
       	else {  var isExists = false;
   	             if (vOrderLink.length > 0) 
