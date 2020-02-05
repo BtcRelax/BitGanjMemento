@@ -55,55 +55,58 @@ BitGanjPoint.prototype.LinkningToOrder = function (pEntry) {
   }
 };
 
-BitGanjPoint.prototype.setNewState = function (pEntry) {
+BitGanjPoint.prototype.setNewState = function (pEntry,pSkipRegister) {
   var vNewState = arg('NewState');
   var vCurrentState = pEntry.field("Status");
-  var cId = pEntry.field("bookmarkId");
-  var cIsSent = pEntry.field("isSent");
+  var vIsSkipServer = typeof pSkipRegister === undefined ? false: pSkipRegister;
   if (vCurrentState !== vNewState) {
-      var vM = moment();  
-      switch (vNewState) {
-          case 'Preparing':
-            if (cId === null && cIsSent === false) {
-                if ((vCurrentState === 'Created') && (pEntry.field("OrderLink").length > 0) && (Number.isInteger(pEntry.field("OrderId"))=== false))
-                {
-                  var vOrders = pEntry.field("OrderLink");
-                  var count = vOrders.length;
-                  for (i = 0; i < count; i++) {
-                      var vOrderEntry = vOrders[i];
-                      if ((vOrderEntry.field("OrderState")==='Paid') && (vOrderEntry.field("isHasLosts")>0) )  {
-                          var vOrderId = vOrderEntry.field("OrderId");
-                          pEntry.set("OrderId", vOrderId);
-                          break;
-                      }
-                  }
-                }
-                var vRes =  this.registerPoint(pEntry);        
-                if (vRes) {
-                    pEntry.set("DropDate", vM.toDate());
-                    pEntry.set("ServerError", "");
-                    pEntry.set("isError", false);                
-                    }
-            } else { this.changeState(pEntry, vNewState);}
-            break;
-         case 'Published':
-            this.updatePoint(pEntry); 
-        	this.changeState(pEntry, vNewState);
-        	break;
-         case 'Catched':
-         	if (vCurrentState === 'Created') {
-         		// Manual sale, so need to create finoperation by hands
-         		message("Manual operation");
-         	} else { this.changeState(pEntry, vNewState); }
-         	break;
-         default:
-            this.changeState(pEntry, vNewState);
-            break;
-        }
-      if (pEntry.field("isError") !== true) {
-	      //pEntry.set("Status", vNewState);
-    	  pEntry.set("StatusChanged", vM.toDate());
-      } else { message("State not changed! Because error happend."); }
+  	  if (vIsSkipServer === true) { pEntry.set("Status", vNewState);  }
+  	  else {
+  	      var vM = moment();  
+  	      var cId = pEntry.field("bookmarkId");
+		  var cIsSent = pEntry.field("isSent");
+	      switch (vNewState) {
+	          case 'Preparing':
+		            if (cId === null && cIsSent === false) {
+		                if ((vCurrentState === 'Created') && (pEntry.field("OrderLink").length > 0) && (Number.isInteger(pEntry.field("OrderId"))=== false))
+		                {
+		                  var vOrders = pEntry.field("OrderLink");
+		                  var count = vOrders.length;
+		                  for (i = 0; i < count; i++) {
+		                      var vOrderEntry = vOrders[i];
+		                      if ((vOrderEntry.field("OrderState")==='Paid') && (vOrderEntry.field("isHasLosts")>0) )  {
+		                          var vOrderId = vOrderEntry.field("OrderId");
+		                          pEntry.set("OrderId", vOrderId);
+		                          break;
+		                      }
+		                  }
+		                }
+	                var vRes =  this.registerPoint(pEntry);        
+	                if (vRes) {
+	                    pEntry.set("DropDate", vM.toDate());
+	                    pEntry.set("ServerError", "");
+	                    pEntry.set("isError", false);                
+	                    }
+	            	} 
+	            	else { this.changeState(pEntry, vNewState);}
+	            break;
+	         case 'Published':
+	            this.updatePoint(pEntry); 
+	        	this.changeState(pEntry, vNewState);
+	        	break;
+	         case 'Catched':
+	         	if (vCurrentState === 'Created') {
+	         		// Manual sale, so need to create finoperation by hands
+	         		message("Manual operation");
+	         	} else { this.changeState(pEntry, vNewState); }
+	         	break;
+	         default:
+	            this.changeState(pEntry, vNewState);
+	            break;
+	        }
+	      if (pEntry.field("isError") !== true) { pEntry.set("StatusChanged", vM.toDate());
+	      } else { message("State not changed! Because error happend."); }	
+  	  }
     } else { message("Point already in that state!"); }
 };
 
@@ -208,10 +211,8 @@ BitGanjPoint.prototype.registerPoint = function (pEntry) {
         log(vResult.body);
         var json = JSON.parse(vResult.body);
         if (json.BookmarkResult === true) {
-          
           pEntry.set("isSent", true);
           pEntry.set("BookmarkId", json.BookmarkState.bookmarkId);
-          //pEntry.set("Status", json.BookmarkState.bookmarkState);
           pEntry.set("Latitude", loc.lat);
           pEntry.set("Longitude", loc.lng);
           pEntry.set("ServerError", "");
@@ -380,5 +381,19 @@ BitGanjPoint.prototype.setOrderToPoint = function (pEntry, pOrder) {
   	                }
   	              }
   	    if (!isExists) { pEntry.link("OrderLink",vOrderEntry);}
-   	};
+   	}
  };
+
+
+
+
+
+
+
+
+
+
+
+
+
+

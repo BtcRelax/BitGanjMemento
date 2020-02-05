@@ -28,11 +28,10 @@ function validateLibraryName(pServer,pTimeshift) {
         message("Библиотека не найденна");
         cancel();
     } else {
-        var vLibApi = new BitGanjLibraries(pServer,pTimeshift)
+        var vLibApi = new BitGanjLibraries(pServer,pTimeshift);
         vLibApi.refreshLibraryEntry(vE);
     }
 }
-
 
 function setAverageLocation() {
     var vE = entry();
@@ -78,7 +77,6 @@ function RefreshLibrary(pServer, vEntry, pTimeShift) {
     }
 }
 
-
 function SyncLibrary(pServer) {
   var cLib = lib();
   var entries = cLib.entries();
@@ -88,8 +86,7 @@ function SyncLibrary(pServer) {
        var cEntry = entries[i];
        var cId = cEntry.field("BookmarkId");
        try {
-            if ((cEntry.field("Status") !== "Catched") || (cEntry.field("Status") !== "Lost")
-            || cEntry.field("Status") !== "Created")  {
+            if ((cEntry.field("Status") !== "Catched") || (cEntry.field("Status") !== "Lost") || cEntry.field("Status") !== "Created")  {
                 vApi.getPointState(cEntry);
             }
        } catch (err) {
@@ -115,12 +112,11 @@ function GetCustomerInfo(pServer, pEntry) {
     if (vCustomerEntry) { vCustomerEntry.show(); }
 }
 
-function SetState(pServer,pEntry,pTimeShift) {
+function SetState(pServer,pEntry,pTimeShift,pSkipRegister) {
   var vEntry = pEntry !== undefined ? pEntry : entry();
   var vApi = new BitGanjPoint(pServer, null, pTimeShift);
-  vApi.setNewState(vEntry);
+  vApi.setNewState(vEntry, pSkipRegister);
 }
-
 
 function GetState(pServer,pEntry, pTimeShift) {
   var vEntry = pEntry !== undefined ? pEntry : entry();
@@ -133,8 +129,6 @@ function UpdatePoint(pServer,pEntry, pTimeShift) {
   var vApi = new BitGanjPoint(pServer, null, pTimeShift);
   vApi.updatePoint(vEntry);
 }
-
-
 
 // {Products} operaions
 function SyncProducts(pServer) {
@@ -285,8 +279,7 @@ function RefreshOrders(pServer) {
               log("Max Order Id set to:" + pMaxId); }
             try {
                 var vState = cEnt.field("OrderState");
-                if ((vState === 'Confirmed') || (vState === 'WaitForPay')
-                    || (vState === 'Paid')) {
+                if ((vState === 'Confirmed') || (vState === 'WaitForPay') || (vState === 'Paid')) {
                     log("Refreshing order id:" + cEnt.field("OrderId"));
                     RefreshOrder(pServer, cEnt ); }
                 } catch (err) {
