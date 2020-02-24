@@ -1,13 +1,13 @@
 // Public methods
 // {Points} operaions
 
-function updateCustomerBanState(pServer, pEntry) {
+function UpdateCustomerBanState(pServer, pEntry) {
 	var vCe = pEntry !== undefined ? pEntry : entry();
 	var vApi = new BitGanjCustomer(pServer);
 	vApi.setUserBan(pEntry);
 }
 
-function checkCustomerInfo(pServer, pCustomerId) {
+function CheckCustomerInfo(pServer, pCustomerId) {
 	var vCustApi = new BitGanjCustomer(pServer);
 	var isExists = vCustApi.isExists(pCustomerId);
 	if (isExists === false) {
@@ -19,7 +19,7 @@ function checkCustomerInfo(pServer, pCustomerId) {
 	}
 }
 
-function validateLibraryName(pServer, pTimeshift) {
+function ValidateLibraryName(pServer, pTimeshift) {
 	var vApi = new BitGanjUtils();
 	var vE = entry();
 	var vName = vE.field("LibraryName");
@@ -33,7 +33,7 @@ function validateLibraryName(pServer, pTimeshift) {
 	}
 }
 
-function setAverageLocation() {
+function SetAverageLocation() {
 	var vE = entry();
 	var vL = vE.field("Loc");
 	var vApi = new BitGanjPoint();
@@ -48,7 +48,7 @@ function setAverageLocation() {
 	vE.set("Loc", JSGeolocation);
 }
 
-function refreshProxies() {
+function RefreshProxies() {
 	var vA = new BitGanjUtils();
 	var vL = vA.getProxiesList();
 	log(vL);
@@ -187,13 +187,13 @@ function SyncVersions() {
 }
 
 /// Global
-function setAuthor(pEntry) {
+function SetAuthor(pEntry) {
 	var cE = pEntry !== undefined ? pEntry : entry();
 	var vAuth = cE.author;
 	cE.set("owner", vAuth);
 }
 
-function fillOwners() {
+function FillOwners() {
 	var clib = lib();
 	var entries = clib.entries();
 	for (var i = 0; i < entries.length; i++) {

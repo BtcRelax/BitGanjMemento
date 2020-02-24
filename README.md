@@ -15,17 +15,15 @@ For refresh item state: GetProductState()
 For refresh all library: SyncProducts()
 Add trigger after open: GetProductState()
 
+[P]Producs - Library with products.
+			Entry action: Register
+				SetProductState('fastfen.club');
 
-
-MyDeals  - Library action:
-			RefreshLibraries('fastfen.club',0);
-<<<<<<< HEAD
-=======
-		   Entry action:
-			RefreshLibrary('fastfen.club',entry(),0);
-			OpenLibrary('fastfen.club',entry());
->>>>>>> 20d4be0a51f47df93e63740587adbef61469c13c
-		
+MyDeals  -	Library action:
+				RefreshLibraries('fastfen.club',0);
+			Entry action:
+				RefreshLibrary('fastfen.club',entry(),0);
+				OpenLibrary('fastfen.club',entry());
 
 RefreshLibrary - method, to collect info about actual library.
 
