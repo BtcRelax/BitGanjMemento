@@ -19,6 +19,12 @@ Add trigger after open: GetProductState()
 
 MyDeals  - Library action:
 			RefreshLibraries('fastfen.club',0);
+<<<<<<< HEAD
+=======
+		   Entry action:
+			RefreshLibrary('fastfen.club',entry(),0);
+			OpenLibrary('fastfen.club',entry());
+>>>>>>> 20d4be0a51f47df93e63740587adbef61469c13c
 		
 
 RefreshLibrary - method, to collect info about actual library.
