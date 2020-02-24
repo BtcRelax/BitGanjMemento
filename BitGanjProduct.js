@@ -6,43 +6,35 @@ function BitGanjProduct(v_server, v_timeShift) {
   }
   
 
+BitGanjProduct.prototype.registerProduct = function(pEntry) {
+	var auth = pEntry.author;
+	if (auth !== null) {
+		var vProductName = pEntry.field('Title');
+		var vProductUrl = pEntry.field('ProductURL');
+		if ((!String.isEmpty(vProductName)) && (!String.isEmpty(vProductUrl))) {
+			var params = encodeURIComponent('[{"ProductName":"' + vProductName + '","ProductURL":"' + vProductUrl + '"}]');
+			var vURI = "https://" + this.server + "/api/Product?action=create&author=" + auth + "&params=" + params;
+			log(vURI);
+			var vResult = http().get(vURI);
+			if (vResult.code == 200) {
+				log(vResult.body);
+				var json = JSON.parse(vResult.body);
+				if (json.ProductResult === true) {
+					pEntry.set("ProductId", json.ProductState.ProductId);
+					pEntry.set("Title", json.ProductState.ProductName);
+					pEntry.set("ProductURL", json.ProductState.ProductURL);
+					pEntry.set("Owner", auth);
+					return this.getProductState(pEntry);
+				} else { pEntry.set("ServerError", json.ProductState); }
+			} else { pEntry.set("ServerError", "As a result of call:" + vResult.code);	}
+		}  else { pEntry.set("ServerError", "Incorrect title or URL to description!"); }
+	} else {
+		pEntry.set("ServerError", "Upload library to cloud before register prducts at server!");
+	}
+	pEntry.set("isError", true);
+	return false;
+};
 
-BitGanjProduct.prototype.registerProduct = function (pEntry) {
-  var auth = pEntry.author;
-  if (auth !== null) {
-    var vProductName = pEntry.field('Title');
-    var vProductUrl = pEntry.field('ProductURL');
-    var params = encodeURIComponent('[{"ProductName":"' + vProductName + '","ProductURL":"' + vProductUrl + '"}]');
-    var vURI = "https://" + this.server + "/api/Product?action=create&author=" + auth + "&params=" + params;
-    log(vURI);
-    var vResult = http().get(vURI);
-    if (vResult.code == 200) {
-      log(vResult.body);
-      var json = JSON.parse(vResult.body);
-      if (json.ProductResult === true) {
-        pEntry.set("ProductId", json.ProductState.ProductId);
-        pEntry.set("Title", json.ProductState.ProductName);
-        pEntry.set("ProductURL", json.ProductState.ProductURL);
-        pEntry.set("Owner", auth);
-        pEntry.set("ServerError", "");
-        pEntry.set("isError", false);
-        return true;
-      } else {
-        pEntry.set("ServerError", json.ProductState);
-        pEntry.set("isError", true);
-      }
-    } else {
-      pEntry.set("ServerError", "As a result of call:" + vResult.code);
-      pEntry.set("isError", true);
-    }
-  } else {
-    pEntry.set("ServerError", "Upload library to cloud before register prducts at server!");
-    pEntry.set("isError", true);
-  }
-  return false;
-}
-
-  
 BitGanjProduct.prototype.getProductState = function (pEntry) {
   var cId = pEntry.field("ProductId");
   var params = encodeURIComponent('[{"ProductId":"' + cId + '"}]');
@@ -51,7 +43,6 @@ BitGanjProduct.prototype.getProductState = function (pEntry) {
     log(query);
     var vResult = http().get(query);
     if (vResult.code === 200) {
-
       log(JSON.stringify(vResult.body));
       var json = JSON.parse(vResult.body);
       if (json.ProductResult === true) {
@@ -64,12 +55,12 @@ BitGanjProduct.prototype.getProductState = function (pEntry) {
                 pEntry.set("Status", "Published");
           } else { pEntry.set("Status", "Registered"); }
         } else {
-        pEntry.set("ServerError", json.ProductError);
-        pEntry.set("isError", true);
+        	pEntry.set("ServerError", json.ProductError);
+        	pEntry.set("isError", true);
       }
     }
   }
-}
+};
 
 
 BitGanjProduct.prototype.setProductState = function (pEntry) {
@@ -98,4 +89,4 @@ BitGanjProduct.prototype.setProductState = function (pEntry) {
     }
     var vM = moment();
     pEntry.set("StatusChanged", vM.toDate());
-}
+};
