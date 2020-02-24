@@ -11,7 +11,7 @@ BitGanjProduct.prototype.registerProduct = function(pEntry) {
 	if (auth !== null) {
 		var vProductName = pEntry.field('Title');
 		var vProductUrl = pEntry.field('ProductURL');
-		if ((!String.isEmpty(vProductName)) && (!String.isEmpty(vProductUrl))) {
+		if ((vProductName!=='') && (vProductUrl!=='')) {
 			var params = encodeURIComponent('[{"ProductName":"' + vProductName + '","ProductURL":"' + vProductUrl + '"}]');
 			var vURI = "https://" + this.server + "/api/Product?action=create&author=" + auth + "&params=" + params;
 			log(vURI);
