@@ -81,8 +81,8 @@ BitGanjLibraries.prototype.refreshLibraryEntry = function(vEntry) {
 		if ((vOnHandsAmount === 0) && (vFrontShop === 0) && (vBeginigState === "InProgress")) {
 			log("All operations was done, so status will be changed to Sailed");
 			vEntry.set('Status', "Sailed");
-		}
-		if (((vOnHandsAmount > 0) || (vFrontShop > 0)) && ((vBeginigState === "NotStarted") || (vBeginigState === "Sailed"))) {
+		} 
+		if ((vOnHandsAmount > 0) || (vFrontShop > 0)) {
 			log("Has open actives so status will be changed to InProgress");
 			vEntry.set('Status', "InProgress");
 		}
