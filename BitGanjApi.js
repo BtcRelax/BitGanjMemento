@@ -61,7 +61,7 @@ function RefreshLibraries(pServer, pTimeShift) {
 	var count = vEntrs.length;
 	for (var i = 0; i < count; i++) {
 		var cLibrary = vEntrs[i];
-		if ((cLibrary.field("Status") === 'InProgress') || (cLibrary.field("Status") === 'NotStarted')) {
+		if (cLibrary.field("Status") !== 'Closed') {
 			RefreshLibrary(pServer, cLibrary, pTimeShift);
 		}
 	}
