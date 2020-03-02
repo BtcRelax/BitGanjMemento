@@ -75,7 +75,7 @@ BitGanjProduct.prototype.setProductState = function (pEntry, pNewState) {
         this.products_published = this.products_published + 1;
         break; 
       default:
-        message('Unsupported server state!');
+        message('Unsupported server state:'+pNewState+'!');
         cancel();
         break;
     }
