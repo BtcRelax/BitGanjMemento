@@ -154,8 +154,8 @@ function SetProductState(pServer, pEntry, pNewState) {
 	var vEntry = pEntry !== undefined ? pEntry : entry();
 	var vNewState = pNewState !== undefined ? pNewState: arg('NewState');
 	if (vEntry !== null) {
-		var vApi = new BitGanjProduct(pServer, vNewState);
-		vApi.setProductState(vEntry);
+		var vApi = new BitGanjProduct(pServer);
+		vApi.setProductState(vEntry, vNewState);
 	}
 }
 
