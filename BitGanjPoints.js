@@ -15,6 +15,7 @@ BitGanjPoint.prototype.tryToCancelOrder = function (pEntry) {
     var qry = "https://" + this.server + "/api/Bookmark?action=CancelFromOrder&author=" + auth + "&bookmarkId=" + cId + "&IsBanCustomer=" + vIsBanCustomer;
     log(qry);
     var vResult = http().get(qry);
+    log("Result code:" + vResult.code + " with body:" + vResult.body);
     if (vResult.code === 200) {
         var json = JSON.parse(vResult.body);
         if (json.BookmarkResult === true) {
@@ -58,7 +59,7 @@ BitGanjPoint.prototype.LinkningToOrder = function (pEntry) {
 BitGanjPoint.prototype.setNewState = function (pEntry,pSkipRegister) {
   var vNewState = arg('NewState');
   var vCurrentState = pEntry.field("Status");
-  var vIsSkipServer = typeof pSkipRegister === undefined ? false: pSkipRegister;
+  var vIsSkipServer = pSkipRegister === undefined ? false: pSkipRegister;
   if (vCurrentState !== vNewState) {
   	  if (vIsSkipServer === true) { pEntry.set("Status", vNewState);  }
   	  else {
@@ -66,7 +67,7 @@ BitGanjPoint.prototype.setNewState = function (pEntry,pSkipRegister) {
   	      var cId = pEntry.field("bookmarkId");
 		  var cIsSent = pEntry.field("isSent");
 	      switch (vNewState) {
-	          case 'Preparing':
+	         case 'Preparing':
 		            if (cId === null && cIsSent === false) {
 		                if ((vCurrentState === 'Created') && (pEntry.field("OrderLink").length > 0) && (Number.isInteger(pEntry.field("OrderId"))=== false))
 		                {
@@ -100,6 +101,16 @@ BitGanjPoint.prototype.setNewState = function (pEntry,pSkipRegister) {
 	         		message("Manual operation");
 	         	} else { this.changeState(pEntry, vNewState); }
 	         	break;
+	         case 'Lost':
+	         	if (this.changeState(pEntry, vNewState)) {
+	         		var vOrderId = pEntry.field("OrderId");
+	         		if (Number.isInteger(vOrderId)) {
+	         			var vBGOrder = new BitGanjOrder(this.server, this.timeshift);
+	         			var vOrder = vBGOrder.getOrderEntryById(vOrderId);
+	         			vOrder.set("isHasLosts", true);
+	         		} 
+	         	}
+	         	break;
 	         default:
 	            this.changeState(pEntry, vNewState);
 	            break;
@@ -116,15 +127,18 @@ BitGanjPoint.prototype.changeState = function (pEntry, vNewState) {
             var qry = "https://" + this.server + "/api/Bookmark?action=SetNewState&author=" + auth + "&bookmarkId=" + cId + "&state=" + vNewState;
             log(qry);
             var vResult = http().get(qry);
+            log("Result code:" + vResult.code + " with body:" + vResult.body);
             if (vResult.code === 200) {
               var json = JSON.parse(vResult.body);
               if (json.BookmarkResult === true) {
                 pEntry.set("Status", json.BookmarkState.bookmarkState);
                 pEntry.set("ServerError", "");
                 pEntry.set("isError", false);
+                return true;
               } else {
                 pEntry.set("ServerError", json.BookmarkError);
                 pEntry.set("isError", true);
+                return false;
               }   
             }
 };
@@ -207,8 +221,8 @@ BitGanjPoint.prototype.registerPoint = function (pEntry) {
       var vURI = "https://" + this.server + "/api/Bookmark?action=CreateNewPoint&author=" + auth + "&params=" + params;
       log(vURI);
       var vResult = http().get(vURI);
+      log("Result code:" + vResult.code + " with body:" + vResult.body);
       if (vResult.code === 200) {
-        log(vResult.body);
         var json = JSON.parse(vResult.body);
         if (json.BookmarkResult === true) {
           pEntry.set("isSent", true);
@@ -253,8 +267,8 @@ BitGanjPoint.prototype.updatePoint = function (pEntry) {
     var vRequest = "https://" + this.server + "/api/Bookmark?action=UpdatePoint&author=" + auth + "&bookmarkId=" + vPointId + "&params=" + params;
     log(vRequest);
     var vResult = http().get(vRequest);
+    log("Result code:" + vResult.code + " with body:" + vResult.body);
     if (vResult.code === 200) {
-      log(vResult.body);
       var json = JSON.parse(vResult.body);
       if (json.BookmarkResult === true) {
         pEntry.set("Latitude", json.BookmarkState.bookmarkLatitude);
