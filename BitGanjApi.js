@@ -150,10 +150,11 @@ function SyncProducts(pServer) {
 	}
 }
 
-function SetProductState(pServer) {
-	var vEntry = entry();
+function SetProductState(pServer, pEntry, pNewState) {
+	var vEntry = pEntry !== undefined ? pEntry : entry();
+	var vNewState = pNewState !== undefined ? pNewState: arg('NewState');
 	if (vEntry !== null) {
-		var vApi = new BitGanjProduct(pServer);
+		var vApi = new BitGanjProduct(pServer, pNewState);
 		vApi.setProductState(vEntry);
 	}
 }

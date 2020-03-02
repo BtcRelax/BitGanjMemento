@@ -63,25 +63,17 @@ BitGanjProduct.prototype.getProductState = function (pEntry) {
 };
 
 
-BitGanjProduct.prototype.setProductState = function (pEntry) {
+BitGanjProduct.prototype.setProductState = function (pEntry, pNewState) {
   var cId = pEntry.field("ProductId");
-  var vNewState = pEntry.field("Status");
-    switch (vNewState) {
-      case 'Registered':
+    switch (pNewState) {
+      case 'Published':
         if (Number.isInteger(cId) === false) {
           if (this.registerProduct(pEntry) === true) {
             message('Product registered!');
           } else { message('Error registering product'); cancel(); }
-        }
-        break;
-      case 'Published':
+        }      	
         this.products_published = this.products_published + 1;
         break; 
-      case 'Created':
-         if (this.registerProduct(pEntry) === true) {
-            message('Product registered!');
-          } else { message('Error registering product'); cancel(); }
-          break;
       default:
         message('Unsupported server state!');
         cancel();
