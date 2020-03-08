@@ -204,6 +204,28 @@ BitGanjPoint.prototype.getProductJson  = function (pEntry) {
   return encodeURIComponent(res + '\"}' );
 };
 
+
+BitGanjPoint.prototype.getOrderParam = function(pEntry) {
+	var result = '';
+	if (Number.isInteger(pEntry.field("OrderId"))) { result = ',"orderid":' + pEntry.field("OrderId"); };
+	return result;
+}
+
+
+BitGanjPoint.prototype.preparePreorderInfo = function (pEntry) {
+	var vOrders = pEntry.field('OrderLink');
+	  for (var i2 = 0; i2 < vOrders.length; i2++) {
+	    var linkedEntry = inbox[i2];
+	    if (linkedEntry.field('OrderState') === 'Saled' ) {
+	    	if ((linkedEntry.field('isHasLosts') === true) && (pEntry.field('Status') === 'Created')) {
+	    		vOrderId = linkedEntry.field('OrderId');
+	    		pEntry.set("OrderId", vOrderId);
+	    	}
+	    }
+	  };
+	 return this.getOrderParam(pEntry);
+}
+
 BitGanjPoint.prototype.registerPoint = function (pEntry) {
   var res = false;
   var vLocation = pEntry.field("Loc");
@@ -214,8 +236,7 @@ BitGanjPoint.prototype.registerPoint = function (pEntry) {
       var price = pEntry.field('TotalPrice');
       var title = this.getAdvertiseTitle(pEntry);
       log(title);
-      var vOrder = "";  
-      if (Number.isInteger(pEntry.field("OrderId"))) { vOrder = ',"orderid":' + pEntry.field("OrderId"); }
+      var vOrder = pEntry.field("OrderLink").length > 0 ? this.preparePreorderInfo(): "";  
       var params = encodeURIComponent('[{"title":"' + title + '","price":' + price + vOrder +
         ',"location":{"latitude":' + loc.lat + ',"longitude":' + loc.lng + '}}]');
       var vURI = "https://" + this.server + "/api/Bookmark?action=CreateNewPoint&author=" + auth + "&params=" + params;
