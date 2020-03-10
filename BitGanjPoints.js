@@ -224,7 +224,7 @@ BitGanjPoint.prototype.getLocationParam = function (pEntry) {
     var pLocation = pEntry.field("Loc");
     if (pLocation !== null) {
     	var loc = this.getAverageLocation(pLocation);
-    	res = ',"location":{"latitude":' + loc.lat + ',"longitude":' + loc.lng + '},';
+    	res = ',"location":{"latitude":' + loc.lat + ',"longitude":' + loc.lng + '}';
     }
     return res;
 };
@@ -237,7 +237,7 @@ BitGanjPoint.prototype.getTitleParam = function (pEntry) {
 
 
 BitGanjPoint.prototype.getPriceParam = function (pEntry) {
-    var res = ',"price":' + pEntry.field('TotalPrice') + ',';
+    var res = ',"price":' + pEntry.field('TotalPrice');
     return res;
 };
 
