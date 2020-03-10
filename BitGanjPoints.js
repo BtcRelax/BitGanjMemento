@@ -260,8 +260,6 @@ BitGanjPoint.prototype.registerPoint = function (pEntry) {
         if (json.BookmarkResult === true) {
           pEntry.set("isSent", true);
           pEntry.set("BookmarkId", json.BookmarkState.bookmarkId);
-          pEntry.set("Latitude", loc.lat);
-          pEntry.set("Longitude", loc.lng);
           pEntry.set("ServerError", "");
           pEntry.set("isError", false);
           this.setPointState(pEntry, json.BookmarkState.bookmarkState); 
