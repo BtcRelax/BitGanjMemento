@@ -122,7 +122,7 @@ function BitGanjOrder(v_server, v_timeShift) {
           log(vResult.body);
           var json = JSON.parse(vResult.body);
           var vOrderEnt = this.updateOrderEntry(json.order);
-          var vBGI = new BitGanjInvoice(this.server,0);
+          var vBGI = new BitGanjInvoice(this.server,this.timeshift);
           if (json.invoice !== null) {
              var vInvoiceEnt = vBGI.updateInvoiceEntry(json.invoice);
              if (vOrderEnt && vInvoiceEnt) { vOrderEnt.set("LinkedInvoice", vInvoiceEnt); }
