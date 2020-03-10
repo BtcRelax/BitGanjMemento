@@ -69,27 +69,13 @@ BitGanjPoint.prototype.setNewState = function (pEntry,pSkipRegister) {
 	      switch (vNewState) {
 	         case 'Preparing':
 		            if (cId === null && cIsSent === false) {
-		                if ((vCurrentState === 'Created') && (pEntry.field("OrderLink").length > 0) && (Number.isInteger(pEntry.field("OrderId"))=== false))
-		                {
-		                  var vOrders = pEntry.field("OrderLink");
-		                  var count = vOrders.length;
-		                  for (i = 0; i < count; i++) {
-		                      var vOrderEntry = vOrders[i];
-		                      if ((vOrderEntry.field("OrderState")==='Paid') && (vOrderEntry.field("isHasLosts")>0) )  {
-		                          var vOrderId = vOrderEntry.field("OrderId");
-		                          pEntry.set("OrderId", vOrderId);
-		                          break;
-		                      }
-		                  }
-		                }
-	                var vRes =  this.registerPoint(pEntry);        
-	                if (vRes) {
-	                    pEntry.set("DropDate", vM.toDate());
-	                    pEntry.set("ServerError", "");
-	                    pEntry.set("isError", false);                
-	                    }
-	            	} 
-	            	else { this.changeState(pEntry, vNewState);}
+		                var vRes =  this.registerPoint(pEntry);        
+		                if (vRes) {
+		                    pEntry.set("DropDate", vM.toDate());
+		                    pEntry.set("ServerError", "");
+		                    pEntry.set("isError", false);                
+		                    }
+	            	} else { this.changeState(pEntry, vNewState);}
 	            break;
 	         case 'Published':
 	            this.updatePoint(pEntry); 
@@ -123,24 +109,29 @@ BitGanjPoint.prototype.setNewState = function (pEntry,pSkipRegister) {
 
 BitGanjPoint.prototype.changeState = function (pEntry, vNewState) {
             var auth = pEntry.author;
-            var cId = pEntry.field("bookmarkId");
-            var qry = "https://" + this.server + "/api/Bookmark?action=SetNewState&author=" + auth + "&bookmarkId=" + cId + "&state=" + vNewState;
-            log(qry);
-            var vResult = http().get(qry);
-            log("Result code:" + vResult.code + " with body:" + vResult.body);
-            if (vResult.code === 200) {
-              var json = JSON.parse(vResult.body);
-              if (json.BookmarkResult === true) {
-                pEntry.set("Status", json.BookmarkState.bookmarkState);
-                pEntry.set("ServerError", "");
-                pEntry.set("isError", false);
-                return true;
-              } else {
-                pEntry.set("ServerError", json.BookmarkError);
-                pEntry.set("isError", true);
-                return false;
-              }   
-            }
+            if (auth !== null) {
+	            var cId = pEntry.field("bookmarkId");
+	            var qry = "https://" + this.server + "/api/Bookmark?action=SetNewState&author=" + auth + "&bookmarkId=" + cId + "&state=" + vNewState;
+	            log(qry);
+	            var vResult = http().get(qry);
+	            log("Result code:" + vResult.code + " with body:" + vResult.body);
+	            if (vResult.code === 200) {
+	              var json = JSON.parse(vResult.body);
+	              if (json.BookmarkResult === true) {
+	                pEntry.set("Status", json.BookmarkState.bookmarkState);
+	                pEntry.set("ServerError", "");
+	                pEntry.set("isError", false);
+	                return true;
+	              } else {
+	                pEntry.set("ServerError", json.BookmarkError);
+	                pEntry.set("isError", true);
+	                return false;
+	              }   
+	            }
+            } else {
+		      pEntry.set("ServerError", "Upload library to cloud before register points at server!");
+		      pEntry.set("isError", true);
+    		}
 };
 
 BitGanjPoint.prototype.getRegionTitle = function (pEntry) {
@@ -259,8 +250,9 @@ BitGanjPoint.prototype.registerPoint = function (pEntry) {
       var vTitle = this.getTitleParam(pEntry);
       var vLocation = this.getLocationParam(pEntry);
       var vOrder = this.getOrderParam(pEntry); 
-      var params = encodeURIComponent('[{' + vPrice + vTitle + vLocation + vOrder + '}]');
-      var vURI = "https://" + this.server + "/api/Bookmark?action=CreateNewPoint&author=" + auth + "&params=" + params;
+      var params = '[{' + vPrice + vTitle + vLocation + vOrder + '}]';
+      log (params);
+      var vURI = "https://" + this.server + "/api/Bookmark?action=CreateNewPoint&author=" + auth + "&params=" + encodeURIComponent(params);
       log(vURI);
       var vResult = http().get(vURI);
       log("Result code:" + vResult.code + " with body:" + vResult.body);
