@@ -103,10 +103,10 @@ BitGanjPoint.prototype.setNewState = function (pEntry,pSkipRegister) {
 	         	break;
 	         case 'Lost':
 	         	if (this.changeState(pEntry, vNewState)) {
-	         		var vOrderId = pEntry.field("OrderId");
-	         		if (Number.isInteger(vOrderId)) {
+	         		var vLostOrderId = pEntry.field("OrderId");
+	         		if (Number.isInteger(vLostOrderId)) {
 	         			var vBGOrder = new BitGanjOrder(this.server, this.timeshift);
-	         			var vOrder = vBGOrder.getOrderEntryById(vOrderId);
+	         			var vOrder = vBGOrder.getOrderEntryById(vLostOrderId);
 	         			vOrder.set("isHasLosts", true);
 	         		} 
 	         	}
@@ -206,13 +206,13 @@ BitGanjPoint.prototype.getProductJson  = function (pEntry) {
 
 
 BitGanjPoint.prototype.getOrderParam = function(pEntry) {
-	var result = '';
-	if (Number.isInteger(pEntry.field("OrderId"))) { result = ',"orderid":' + pEntry.field("OrderId"); };
+	var result = this.preparePreorderInfo(pEntry);
 	return result;
-}
+};
 
 
 BitGanjPoint.prototype.preparePreorderInfo = function (pEntry) {
+	var res = '';
 	var vOrders = pEntry.field('OrderLink');
 	  for (var i2 = 0; i2 < vOrders.length; i2++) {
 	    var linkedEntry = vOrders[i2];
@@ -221,25 +221,45 @@ BitGanjPoint.prototype.preparePreorderInfo = function (pEntry) {
 	    		vOrderId = linkedEntry.field('OrderId');
 	    		log("Assign order id:" + vOrderId );
 	    		pEntry.set("OrderId", vOrderId);
+	    		res = '"orderid":' + vOrderId + ',';
 	    	}
 	    }
-	  };
-	 return this.getOrderParam(pEntry);
-}
+	  }
+	 return res;
+};
+
+
+BitGanjPoint.prototype.getLocationParam = function (pEntry) {
+    var res = '';
+    var pLocation = pEntry.field("Loc");
+    if (pLocation !== null) {
+    	var loc = this.getAverageLocation(pLocation);
+    	res = '"location":{"latitude":' + loc.lat + ',"longitude":' + loc.lng + '},';
+    }
+    return res;
+};
+
+
+BitGanjPoint.prototype.getTitleParam = function (pEntry) {
+    var res = '"title":"' + this.getAdvertiseTitle(pEntry) + '",';
+    return res;
+};
+
+
+BitGanjPoint.prototype.getPriceParam = function (pEntry) {
+    var res = '"price":' + pEntry.field('TotalPrice') + ',';
+    return res;
+};
 
 BitGanjPoint.prototype.registerPoint = function (pEntry) {
   var res = false;
-  var vLocation = pEntry.field("Loc");
-  if (vLocation !== null) {
-    var loc = this.getAverageLocation(vLocation);
-    var auth = pEntry.author;
+  var auth = pEntry.author;
     if (auth !== null) {
-      var price = pEntry.field('TotalPrice');
-      var title = this.getAdvertiseTitle(pEntry);
-      log(title);
-      var vOrder = pEntry.field("OrderLink").length > 0 ? this.preparePreorderInfo(): ""; 
-      var params = encodeURIComponent('[{"title":"' + title + '","price":' + price + vOrder +
-        ',"location":{"latitude":' + loc.lat + ',"longitude":' + loc.lng + '}}]');
+      var vPrice = this.getPriceParam(pEntry);
+      var vTitle = this.getTitleParam(pEntry);
+      var vLocation = this.getLocationParam(pEntry);
+      var vOrder = this.getOrderParam(pEntry); 
+      var params = encodeURIComponent('[{' + vPrice + vTitle + vLocation + vOrder + '}]');
       var vURI = "https://" + this.server + "/api/Bookmark?action=CreateNewPoint&author=" + auth + "&params=" + params;
       log(vURI);
       var vResult = http().get(vURI);
@@ -268,10 +288,6 @@ BitGanjPoint.prototype.registerPoint = function (pEntry) {
       pEntry.set("ServerError", "Upload library to cloud before register points at server!");
       pEntry.set("isError", true);
     }
-  } else {
-    pEntry.set("ServerError", "Location is not set. Set location before sync!");
-    pEntry.set("isError", true);
-  }
   return res;
 };
 
