@@ -215,10 +215,11 @@ BitGanjPoint.prototype.getOrderParam = function(pEntry) {
 BitGanjPoint.prototype.preparePreorderInfo = function (pEntry) {
 	var vOrders = pEntry.field('OrderLink');
 	  for (var i2 = 0; i2 < vOrders.length; i2++) {
-	    var linkedEntry = inbox[i2];
+	    var linkedEntry = vOrders[i2];
 	    if (linkedEntry.field('OrderState') === 'Saled' ) {
 	    	if ((linkedEntry.field('isHasLosts') === true) && (pEntry.field('Status') === 'Created')) {
 	    		vOrderId = linkedEntry.field('OrderId');
+	    		log("Assign order id:" + vOrderId );
 	    		pEntry.set("OrderId", vOrderId);
 	    	}
 	    }
@@ -236,7 +237,7 @@ BitGanjPoint.prototype.registerPoint = function (pEntry) {
       var price = pEntry.field('TotalPrice');
       var title = this.getAdvertiseTitle(pEntry);
       log(title);
-      var vOrder = pEntry.field("OrderLink").length > 0 ? this.preparePreorderInfo(): "";  
+      var vOrder = pEntry.field("OrderLink").length > 0 ? this.preparePreorderInfo(): ""; 
       var params = encodeURIComponent('[{"title":"' + title + '","price":' + price + vOrder +
         ',"location":{"latitude":' + loc.lat + ',"longitude":' + loc.lng + '}}]');
       var vURI = "https://" + this.server + "/api/Bookmark?action=CreateNewPoint&author=" + auth + "&params=" + params;
