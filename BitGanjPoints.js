@@ -211,7 +211,7 @@ BitGanjPoint.prototype.preparePreorderInfo = function (pEntry) {
 	    		vOrderId = linkedEntry.field('OrderId');
 	    		log("Assign order id:" + vOrderId );
 	    		pEntry.set("OrderId", vOrderId);
-	    		res = '"orderid":' + vOrderId + ',';
+	    		res = ',"orderid":' + vOrderId;
 	    		break;
 	    }
 	  }
@@ -224,20 +224,20 @@ BitGanjPoint.prototype.getLocationParam = function (pEntry) {
     var pLocation = pEntry.field("Loc");
     if (pLocation !== null) {
     	var loc = this.getAverageLocation(pLocation);
-    	res = '"location":{"latitude":' + loc.lat + ',"longitude":' + loc.lng + '},';
+    	res = ',"location":{"latitude":' + loc.lat + ',"longitude":' + loc.lng + '},';
     }
     return res;
 };
 
 
 BitGanjPoint.prototype.getTitleParam = function (pEntry) {
-    var res = '"title":"' + this.getAdvertiseTitle(pEntry) + '",';
+    var res = '"title":"' + this.getAdvertiseTitle(pEntry) + '"';
     return res;
 };
 
 
 BitGanjPoint.prototype.getPriceParam = function (pEntry) {
-    var res = '"price":' + pEntry.field('TotalPrice') + ',';
+    var res = ',"price":' + pEntry.field('TotalPrice') + ',';
     return res;
 };
 
@@ -245,11 +245,11 @@ BitGanjPoint.prototype.registerPoint = function (pEntry) {
   var res = false;
   var auth = pEntry.author;
     if (auth !== null) {
+	  var vTitle = this.getTitleParam(pEntry);
       var vPrice = this.getPriceParam(pEntry);
-      var vTitle = this.getTitleParam(pEntry);
-      var vLocation = this.getLocationParam(pEntry);
+	  var vLocation = this.getLocationParam(pEntry);
       var vOrder = this.getOrderParam(pEntry); 
-      var params = '[{' + vPrice + vTitle + vLocation + vOrder + '}]';
+      var params = '[{'+ vTitle + vPrice + vLocation + vOrder '}]';
       log (params);
       var vURI = "https://" + this.server + "/api/Bookmark?action=CreateNewPoint&author=" + auth + "&params=" + encodeURIComponent(params);
       log(vURI);
