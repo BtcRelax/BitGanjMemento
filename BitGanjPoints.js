@@ -249,7 +249,7 @@ BitGanjPoint.prototype.registerPoint = function (pEntry) {
       var vPrice = this.getPriceParam(pEntry);
 	  var vLocation = this.getLocationParam(pEntry);
       var vOrder = this.getOrderParam(pEntry); 
-      var params = '[{'+ vTitle + vPrice + vLocation + vOrder '}]';
+      var params = '[{'+ vTitle + vPrice + vLocation + vOrder + '}]';
       log (params);
       var vURI = "https://" + this.server + "/api/Bookmark?action=CreateNewPoint&author=" + auth + "&params=" + encodeURIComponent(params);
       log(vURI);
