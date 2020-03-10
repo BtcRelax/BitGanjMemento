@@ -207,13 +207,12 @@ BitGanjPoint.prototype.preparePreorderInfo = function (pEntry) {
 	var vOrders = pEntry.field('OrderLink');
 	  for (var i2 = 0; i2 < vOrders.length; i2++) {
 	    var linkedEntry = vOrders[i2];
-	    if (linkedEntry.field('OrderState') === 'Saled' ) {
-	    	if ((linkedEntry.field('isHasLosts') === true) && (pEntry.field('Status') === 'Created')) {
+		if (linkedEntry.field('isHasLosts') === true) {
 	    		vOrderId = linkedEntry.field('OrderId');
 	    		log("Assign order id:" + vOrderId );
 	    		pEntry.set("OrderId", vOrderId);
 	    		res = '"orderid":' + vOrderId + ',';
-	    	}
+	    		break;
 	    }
 	  }
 	 return res;
