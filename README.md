@@ -1,5 +1,6 @@
 # scripts
 Authors: godJah
+
 Define object for communicate from libraries into MementoDatabase to BtcRelax system.
 
 Main documentation : http://wiki.mementodatabase.com/index.php/Memento_JavaScript_Library
