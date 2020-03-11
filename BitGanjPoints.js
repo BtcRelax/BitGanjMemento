@@ -263,7 +263,7 @@ BitGanjPoint.prototype.registerPoint = function (pEntry) {
           pEntry.set("ServerError", "");
           pEntry.set("isError", false);
           this.setPointState(pEntry, json.BookmarkState.bookmarkState); 
-          this.registered = this.registered + 1;
+          this.updatePoint(pEntry);
           res = true;
         } else {
           pEntry.set("ServerError", json.BookmarkError);
