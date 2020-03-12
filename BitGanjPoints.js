@@ -300,6 +300,7 @@ BitGanjPoint.prototype.updatePoint = function (pEntry) {
       if (json.BookmarkResult === true) {
         pEntry.set("Latitude", json.BookmarkState.bookmarkLatitude);
         pEntry.set("Longitude", json.BookmarkState.bookmarkLongitude);
+        pEntry.set("URLToLocation",'http://google.com/maps/place/'+json.BookmarkState.bookmarkLatitude+','+json.BookmarkState.bookmarkLongitude);
         pEntry.set("URLToPhoto", json.BookmarkState.bookmarkPhotoLink);
         pEntry.set("Description", json.BookmarkState.bookmarkDescription);
         pEntry.set("ServerError", "");
