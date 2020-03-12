@@ -1,5 +1,5 @@
 # scripts
-Authors: godJah,
+Authors: godJah, azazello
 
 Define object for communicate from libraries into MementoDatabase to BtcRelax system.
 
