@@ -6,15 +6,11 @@ Define object for communicate from libraries into MementoDatabase to BtcRelax sy
 Main documentation : http://wiki.mementodatabase.com/index.php/Memento_JavaScript_Library
 
 For Library:
---------- [S]Customers - set next actions:
-Trigger after update:
-updateCustomerBanState('shop.fastfen.club');
+Orders - Library for manipulate with order entries, such as refresh, or cancel order. 
+	Entry action: Refresh
+		RefreshOrder('fastfen.club');
+		
 
- -------- [S]Products ---------- 
-Add Entry action: SetProductState()
-For refresh item state: GetProductState()
-For refresh all library: SyncProducts()
-Add trigger after open: GetProductState()
 
 [P]Producs - Library with products.
 			Entry action: Register
