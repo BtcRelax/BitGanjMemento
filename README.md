@@ -1,36 +1,41 @@
-# scripts
+# Scripts for Momento Database
+
 Authors: godJah, azazello, bitmdma
 
 Define object for communicate from libraries into MementoDatabase to BtcRelax system.
 
-Main documentation : http://wiki.mementodatabase.com/index.php/Memento_JavaScript_Library
+Main Memento documentation : http://wiki.mementodatabase.com/index.php/Memento_JavaScript_Library
 
-For Library:
-Orders - Library for manipulate with order entries, such as refresh, or cancel order. 
-	Entry action: Refresh
-		RefreshOrder('fastfen.club');
-		
+Ниже, описания тех событий что могут происходить у нас в Momento. И что бы не получалось что каждый описал понятно для себя, но остальным это не ясно. Мы это место формализуем. А т.е. формат описания должен быть следующий.
 
+---------------------------------------------
+[Название библиотеки] - [краткое её описание]
 
-[P]Producs - Library with products.
-			Entry action: Register
-				SetProductState('fastfen.club');
+	[1]:[2]
+	
+	  [3]
+	 
+Где:
+1. Название события в Momento на которое будет наложен скрипт. События у нас бывают, по библиотеке (Library actions) и по текущей записи (Entry action), и триггеры, как то: в момент открытия библиотеки, в момент ДО редактирования записи, или ПОСЛЕ т.е. при попытке сохранения. А т.е. все виды триггеров что есть описанны тут: https://wiki.mementodatabase.com/index.php/Trigger_Examples
 
-MyDeals  -	Library action:
-				RefreshLibraries('fastfen.club',0);
-			Entry action:
-				RefreshLibrary('fastfen.club',entry(),0);
-				OpenLibrary('fastfen.club',entry());
+2. Название комманды, что мы хотим добавить.
+3. Содержимое, что надо вставить по данному событию в поле скриптов в моменто.
 
-RefreshLibrary - method, to collect info about actual library.
+---------------------------------------------
+## For Library:
 
-[S]Points - Library action: 
-            SyncLybrary();
-            Entry action: SetState();
-            Trigger, after open: GetState();
-            Trigger, after update: UpdatePoint();
+1. Orders - Library for manipulate with order entries, such as refresh, or cancel order. 
++ Entry action: Refresh 
+	
+``		RefreshOrder('fastfen.club');
+``
 
-Customers - Library action:
-			Entry action: RefreshCustomer('fastfen.club',entry());
-			
+2. Points - Library for manipulate with points entries, such as refresh, or set new point state, or get info about customer.
++ Entry action: Refresh
 
+``	GetState('fastfen.club');
+``
++ Enrey action: SetState (Argument: NewState )
+
+``	SetState('fastfen.club');
+``
