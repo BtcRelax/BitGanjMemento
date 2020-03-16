@@ -1,6 +1,6 @@
 # Scripts for Momento Database
 
-Authors: godJah, bitmdma
+Authors: godJah, azazello, bitmdma
 
 Define object for communicate from libraries into MementoDatabase to BtcRelax system.
 
