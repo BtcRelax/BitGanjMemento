@@ -1,7 +1,6 @@
-function BitGanjLibraries(vServer, vTimeShift, vIsControlState) {
+function BitGanjLibraries(vServer, vTimeShift) {
     this.server = vServer !== undefined ? vServer : 'test.bitganj.website';
     this.timeshift = Number.isInteger(vTimeShift) ? vTimeShift : 7;
-    this.isControlState  = vIsControlState !==  undefined ? vIsControlState :true ;
     this.currentLibrary = null;
   }
   
@@ -19,9 +18,7 @@ BitGanjLibraries.prototype.refreshLibraryEntry = function(vEntry) {
 	var vOnHandsAmount = 0;
 	var vOnHandsWeight = 0;
 	this.currentLibrary = vEntry;
-	if (this.isControlState) {
-		var vBeginigState = vEntry.field('Status');
-	}
+	var vBeginigState = vEntry.field('Status');
 	var vLN = vEntry.field('LibraryName');
 	var vLib = libByName(vLN);
 	if (vLib) {
@@ -76,30 +73,25 @@ BitGanjLibraries.prototype.refreshLibraryEntry = function(vEntry) {
 	vEntry.set('SaledWeight', vSaledWeight);
 	vEntry.set('FrontShop', vFrontShop);
 	vEntry.set('FrontShopWeight', vFrontShopWeight);
-	vEntry.recalc();
-	if (this.isControlState) {
-		if ((vOnHandsAmount === 0) && (vFrontShop === 0) && (vBeginigState === "InProgress")) {
+	if ((vOnHandsAmount === 0) && (vFrontShop === 0) && (vBeginigState === "InProgress")) {
 			log("All operations was done, so status will be changed to Sailed");
 			vEntry.set('Status', "Sailed");
-		} 
-		if ((vOnHandsAmount > 0) || (vFrontShop > 0)) {
+		}
+	if ((vOnHandsAmount > 0) || (vFrontShop > 0)) {
 			log("Has open actives so status will be changed to InProgress");
 			vEntry.set('Status', "InProgress");
 		}
-	}
+	vEntry.recalc();
 };
 
-BitGanjLibraries.prototype.processPoint = function(pEntry) {
-	var vOrderId = pEntry.field("OrderId");
-	if (Number.isInteger(vOrderId)) {
-		log("Processing point with order id:" + vOrderId);
-		var vOrderApi = new BitGanjOrder(this.server, this.timeshift);
-		var vOrder = vOrderApi.getOrderEntryById(vOrderId);
-		var vInvoice = vOrder.field("LinkedInvoice")[0];
+BitGanjLibraries.prototype.processOrder = function(pEntry) {
+	var invoiceCnt = pEntry.field("LinkedInvoice").length;    
+	for (var i2 = 0; i2 < invoiceCnt; i2++) {
+	    var vInvoice = pEntry.field("LinkedInvoice")[i2];
 		var vInvoiceState = vInvoice.field("InvoiceState");
 		var vInvoiceId = vInvoice.field("InvoiceId");
 		var vFinOperationsCount = vInvoice.field("isHasFinoperation");
-		log("Order id:" + vOrderId + " was found. And have invoice id: " + vInvoiceId + " with state" + vInvoiceState + " and fin operations:" + vFinOperationsCount);
+		log("Order id:" + pEntry.field("OrderId") + " was found. And have invoice id: " + vInvoiceId + " with state" + vInvoiceState + " and fin operations:" + vFinOperationsCount);
 		if (((vInvoiceState === "Payed") || (vInvoiceState === "OverPay")) && vFinOperationsCount === false) {
 			var vFinOperationEntry = this.createFinOperation();
 			if (vFinOperationEntry !== false) {
@@ -113,7 +105,17 @@ BitGanjLibraries.prototype.processPoint = function(pEntry) {
 				vFinOperationEntry.recalc();
 				this.addFinOperation(vFinOperationEntry);
 			}
-		}
+		}		
+	}
+};
+
+BitGanjLibraries.prototype.processPoint = function(pEntry) {
+	var vOrderId = pEntry.field("OrderId");
+	if (Number.isInteger(vOrderId)) {
+		log("Processing point:" + pEntry.field("bookmarkId") + " with order id:" + vOrderId);
+		var vOrderApi = new BitGanjOrder(this.server, this.timeshift);
+		var vOrder = vOrderApi.getOrderEntryById(vOrderId);
+		this.processOrder(vOrder);
 	}
 };
 
@@ -126,7 +128,7 @@ BitGanjLibraries.prototype.addFinOperation = function(vNewFinOperation) {
 BitGanjLibraries.prototype.createFinOperation = function() {
 	var vUtil = new BitGanjUtils(this.server, null, this.timeshift);
 	var vFinLib = vUtil.getLibByName("FinOperations");
-	if (vFinLib != false) {
+	if (vFinLib !== false) {
 		var vFinOperation = vFinLib.create(new Object({
 			FinType: 'Debet',
 			OperationType: 'Продажа'
