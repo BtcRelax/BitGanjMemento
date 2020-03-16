@@ -27,15 +27,29 @@ Main Memento documentation : http://wiki.mementodatabase.com/index.php/Memento_J
 1. Orders - Library for manipulate with order entries, such as refresh, or cancel order. 
 + Entry action: Refresh 
 	
-``		RefreshOrder('fastfen.club');
-``
+		RefreshOrder('fastfen.club');
+	
 
 2. Points - Library for manipulate with points entries, such as refresh, or set new point state, or get info about customer.
++ Entry action: SetState 
+
+	[Argumet:NewState]: /Lists/NewState.items.csv "Argumet: NewState"
+	[Argumet:NewState]
+
+		SetState('fastfen.club');
+		
+
 + Entry action: Refresh
 
-``	GetState('fastfen.club');
-``
-+ Enrey action: SetState (Argument: NewState )
+		GetState('fastfen.club');
 
-``	SetState('fastfen.club');
-``
+3.  Invoices - Library for manipulate with invoices, such as check ballance, cancel, or apply discount.
+
+    List item one continued with a second paragraph followed by an
+    Indented block.
+
+        $ ls *.sh
+        $ mv *.sh ~/tmp
+
+    List item continued with a third paragraph.
+
