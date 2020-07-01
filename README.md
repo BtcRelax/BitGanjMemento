@@ -53,3 +53,11 @@ Main Memento documentation : http://wiki.mementodatabase.com/index.php/Memento_J
 
     List item continued with a third paragraph.
 
+4. Products - Library for manipulate with product entries, set new  state, or register.
++ Entry action: GetProductState 
+
+		GetProductState('fastfen.club');
+		
++ Entry action: SetProductState 
+
+		SetProductState('fastfen.club');
