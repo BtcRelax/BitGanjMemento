@@ -33,19 +33,13 @@ function ValidateLibraryName(pServer, pTimeshift) {
 	}
 }
 
-function SetAverageLocation() {
-	var vE = entry();
-	var vL = vE.field("Loc");
+function SetAverageLocationURL(pSourceFieldname,pDestinationFieldname,pEntry) {
+	var vCe = pEntry !== undefined ? pEntry : entry();
+	var vL = vCe.field(pSourceFieldname);
 	var vApi = new BitGanjPoint();
 	var vAL = vApi.getAverageLocation(vL);
-	var JSGeolocation = {
-		address: "",
-		hasNext: false,
-		lat: vAL.lat,
-		lng: vAL.lng,
-		next: null
-	};
-	vE.set("Loc", JSGeolocation);
+	var vLU = "http://google.com/maps/place/?q="+vAL.lat+","+vAL.lng;
+	vE.set(pDestinationFieldname,vLU);
 }
 
 function RefreshProxies() {
