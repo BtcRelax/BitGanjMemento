@@ -39,7 +39,7 @@ function SetAverageLocationURL(pSourceFieldname,pDestinationFieldname,pEntry) {
 	var vApi = new BitGanjPoint();
 	var vAL = vApi.getAverageLocation(vL);
 	var vLU = "http://google.com/maps/place/?q="+vAL.lat+","+vAL.lng;
-	vE.set(pDestinationFieldname,vLU);
+	vCe.set(pDestinationFieldname,vLU);
 }
 
 function RefreshProxies() {
