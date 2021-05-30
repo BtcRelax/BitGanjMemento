@@ -10,7 +10,7 @@ BitGanjTelegraph.prototype.createPage = function (pEntry) {
     var res = false;
     var vTitle = vCe.field("title");
     var vContent = '[{"tag":"p","attrs":{},"children":[{"tag":"br","attrs":{},"children":[]}]},{"tag":"figure","attrs":{},"children":[{"tag":"img","attrs":{"src":"https://telegra.ph/file/2ff9ee4b8b9c9218ca074.jpg"},"children":[]},{"tag":"figcaption","attrs":{},"children":[]}]}]';
-    var params = 'title='+vTitle+'&author_name='+this.author_name+'&author_url='+this.author_url+'&content=';
+    var params = 'title='+encodeURIComponent(vTitle)+'&author_name='+encodeURIComponent(this.author_name)+'&author_url='+encodeURIComponent(this.author_url)+'&content=';
     var vURI = "https://api.telegra.ph/createPage?access_token="+access_token;
     log (params);
     var vBody = params+encodeURIComponent(vContent);
