@@ -14,11 +14,8 @@ BitGanjTelegraph.prototype.createPage = function (pEntry) {
     var params = 'title='+encodeURIComponent(vTitle)+'&author_name='+encodeURIComponent(this.author_name)+'&author_url='+encodeURIComponent(this.author_url)+'&content=';
     var vURI = "https://api.telegra.ph/createPage?access_token="+access_token;
     var vBody = params+encodeURIComponent(vContent);
-    log (vBody);
-    var http= http();
-    http.headers({"Content-Type": "application/x-www-form-urlencoded"});
-    http.headers({"User-Agent": "okhttp/3.12.1"});
-    var vResult = http.post(vURI,vBody);
+    log (vBody);  
+    var vResult = http().post(vURI,vBody);
     log("Result code:" + vResult.code + " with body:" + vResult.body);
     if (vResult.code === 200) {
         var json = JSON.parse(vResult.body);             
