@@ -1,3 +1,4 @@
+/* global http, moment */
 function BitGanjTelegraph(v_access_token,v_author_name, v_author_url) {
     this.access_token = v_access_token;
     this.author_name =  v_author_name !== undefined ? v_author_name : "god Jah";
