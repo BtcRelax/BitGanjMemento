@@ -1,7 +1,7 @@
 function BitGanjTelegraph(v_access_token,v_author_name, v_author_url) {
     this.access_token = v_access_token;
-    this.author_name =  v_author_name !== null ? v_author_name : "god Jah";
-    this.author_url = v_author_url !== null ? v_author_url : "https://t.me/godjah";
+    this.author_name =  v_author_name !== undefined ? v_author_name : "god Jah";
+    this.author_url = v_author_url !== undefined ? v_author_url : "https://t.me/godjah";
 }
 
 
