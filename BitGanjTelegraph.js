@@ -9,6 +9,8 @@ function BitGanjTelegraph(v_access_token,v_author_name, v_author_url) {
 BitGanjTelegraph.prototype.createPage = function (pBody) {
   var res = false;
   var vURI = "https://api.telegra.ph/createPage?access_token="+this.access_token;
+  log("Request URI:"+vURI);
+  log("Request body:"+pBody);
   var vResult = http().post(vURI,pBody);
     log("Result code:" + vResult.code + " with body:" + vResult.body);
       if (vResult.code === 200) {
