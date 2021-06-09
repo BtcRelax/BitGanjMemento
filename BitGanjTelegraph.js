@@ -23,7 +23,7 @@ BitGanjTelegraph.prototype.createPage = function (pBody) {
 BitGanjTelegraph.prototype.preparePage = function(pEntry) {
   var vCe = pEntry !== undefined ? pEntry : entry();
   var res = false;
-  var vTitle = pTitle !== undefined ? pTitle : vCe.field("ContentInfo");
+  var vTitle = vCe.field("ContentInfo");
   var vContent = '[{"tag":"p","attrs":{},"children":[{"tag":"br","attrs":{},"children":[]}]},{"tag":"figure","attrs":{},"children":[{"tag":"img","attrs":{"src":"https://telegra.ph/file/2ff9ee4b8b9c9218ca074.jpg"},"children":[]},{"tag":"figcaption","attrs":{},"children":[]}]}]';
   var params = 'title='+vTitle+'&author_name='+this.author_name+'&author_url='+this.author_url+'&content='+vContent;
   res = params+encodeURIComponent(vContent);   
