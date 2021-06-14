@@ -14,8 +14,7 @@ BitGanjTelegraph.prototype.createPage = function (pBody) {
   var vResult = http().post(vURI,pBody);
     log("Result code:" + vResult.code + " with body:" + vResult.body);
       if (vResult.code === 200) {
-          var json = JSON.parse(vResult.body);
-          res = json;
+          res = JSON.parse(vResult.body);
       } else {
           log ("ServerError:" + vResult.code);
       };
