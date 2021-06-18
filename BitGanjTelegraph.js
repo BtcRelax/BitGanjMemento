@@ -14,8 +14,7 @@ BitGanjTelegraph.prototype.createPage = function (pBody) {
   var vResult = http().post(vURI,pBody);
     log("Result code:" + vResult.code + " with body:" + vResult.body);
       if (vResult.code === 200) {
-          var json = JSON.parse(vResult.body);
-          res = true;
+          res = JSON.parse(vResult.body);
       } else {
           log ("ServerError:" + vResult.code);
       };
@@ -27,8 +26,12 @@ BitGanjTelegraph.prototype.preparePage = function(pEntry) {
   var res = false;
   var vTitle = vCe.field("ContentInfo");
   var vContent = '[{"tag":"p","attrs":{},"children":[{"tag":"br","attrs":{},"children":[]}]},{"tag":"figure","attrs":{},"children":[{"tag":"img","attrs":{"src":"https://telegra.ph/file/2ff9ee4b8b9c9218ca074.jpg"},"children":[]},{"tag":"figcaption","attrs":{},"children":[]}]}]';
-  var vBody = {title: vTitle , author_name:  this.author_name , author_url: this.author_url , content : vContent , return_content: true};
-  res = vBody;
+  var vBody = { title: vTitle,
+          author_name: this.author_name, 
+          author_url : this.author_url,
+          content: vContent,
+          return_content:true };
+  res = JSON.stringify(vBody);
   return res;
 }
 
