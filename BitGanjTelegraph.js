@@ -8,18 +8,20 @@ function BitGanjTelegraph(v_access_token,v_author_name, v_author_url) {
 
 BitGanjTelegraph.prototype.createPage = function (pBody) {
   var res = false;
+  var httpReq=http();
   var vURI = "https://api.telegra.ph/createPage?access_token="+this.access_token;
   log("Request URI:"+vURI);
   log("Request body:"+pBody);
-  var vResult = http().post(vURI,pBody);
-    log("Result code:" + vResult.code + " with body:" + vResult.body);
-      if (vResult.code === 200) {
-          res = JSON.parse(vResult.body);
-      } else {
-          log ("ServerError:" + vResult.code);
-      };
-    return res;  
-}
+  httpReq.headers({"Content-Type": "application/x-www-form-urlencoded"}); 
+  var vResult = httpReq.post(vURI,pBody);
+  log("Result code:" + vResult.code + " with body:" + vResult.body);
+  if (vResult.code === 200) {
+      res = JSON.parse(vResult.body);
+  } else {
+      log ("ServerError:" + vResult.code);
+  }
+  return res;  
+};
 
 BitGanjTelegraph.prototype.preparePage = function(pEntry) {
   var vCe = typeof pEntry !== "undefined" ? pEntry : entry();
@@ -33,7 +35,7 @@ BitGanjTelegraph.prototype.preparePage = function(pEntry) {
           return_content:true };
   res = JSON.stringify(vBody);
   return res;
-}
+};
 
 BitGanjTelegraph.prototype.domToNode = function(domNode) {
   if (domNode.nodeType == domNode.TEXT_NODE) {
@@ -55,20 +57,21 @@ BitGanjTelegraph.prototype.domToNode = function(domNode) {
   }
   if (domNode.childNodes.length > 0) {
     nodeElement.children = [];
-    for (var i = 0; i < domNode.childNodes.length; i++) {
-      var child = domNode.childNodes[i];
+    for (var u = 0; u < domNode.childNodes.length; u++) {
+      var child = domNode.childNodes[u];
       nodeElement.children.push(domToNode(child));
     }
   }
   return nodeElement;
-}
+};
 
 BitGanjTelegraph.prototype.nodeToDom = function(node) {
   if (typeof node === 'string' || node instanceof String) {
     return document.createTextNode(node);
   }
+  var domNode;
   if (node.tag) {
-    var domNode = document.createElement(node.tag);
+    domNode = document.createElement(node.tag);
     if (node.attrs) {
       for (var name in node.attrs) {
         var value = node.attrs[name];
@@ -76,7 +79,7 @@ BitGanjTelegraph.prototype.nodeToDom = function(node) {
       }
     }
   } else {
-    var domNode = document.createDocumentFragment();
+    domNode = document.createDocumentFragment();
   }
   if (node.children) {
     for (var i = 0; i < node.children.length; i++) {
@@ -85,4 +88,4 @@ BitGanjTelegraph.prototype.nodeToDom = function(node) {
     }
   }
   return domNode;
-}
+};
