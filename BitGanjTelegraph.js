@@ -6,6 +6,16 @@ function BitGanjTelegraph(v_access_token,v_author_name, v_author_url) {
 }
 
 
+BitGanjTelegraph.prototype.JSON2Form = function(pJSON)
+{
+  var res = 'title='+encodeURIComponent(pJSON.title);
+  res+='&author_name='+encodeURIComponent(pJSON.author_name);
+  res+='&author_url='+encodeURIComponent(pJSON.author_url);
+  res+='&content='+encodeURIComponent(pJSON.content);
+  res+='&return_content=true';
+  return res;
+};
+
 BitGanjTelegraph.prototype.createPage = function (pBody) {
   var res = false;
   var httpReq=http();
