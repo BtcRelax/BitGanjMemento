@@ -43,7 +43,7 @@ BitGanjTelegraph.prototype.preparePage = function(pEntry) {
           author_url : this.author_url,
           content: vContent,
           return_content:true };
-  res = JSON.stringify(vBody);
+  res = vBody;
   return res;
 };
 
