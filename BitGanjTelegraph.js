@@ -8,7 +8,8 @@ function BitGanjTelegraph(v_access_token,v_author_name, v_author_url) {
 
 BitGanjTelegraph.prototype.JSON2Form = function(pJSON)
 {
-  var res = 'title='+encodeURIComponent(pJSON.title);
+  var res= JSON.parse(pJSON); 
+  res+= 'title='+encodeURIComponent(pJSON.title);
   res+='&author_name='+encodeURIComponent(pJSON.author_name);
   res+='&author_url='+encodeURIComponent(pJSON.author_url);
   res+='&content='+encodeURIComponent(pJSON.content);
