@@ -23,7 +23,6 @@ BitGanjTelegraph.prototype.createPage = function (pBody) {
   var vURI = "https://api.telegra.ph/createPage?access_token="+this.access_token;
   log("Request URI:"+vURI);
   log("Request body:"+pBody);
-  httpReq.headers({"Content-Type": "application/x-www-form-urlencoded"}); 
   var vResult = httpReq.post(vURI,pBody);
   log("Result code:" + vResult.code + " with body:" + vResult.body);
   if (vResult.code === 200) {
