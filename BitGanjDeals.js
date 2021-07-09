@@ -20,5 +20,6 @@ BitGanjDeals.prototype.updateVendor = function(pEntry) {
     {
       var vVend=ce.field("Vendor")[0];
       vVend.set("LastTransaction", this.current_date );
+      log("Last transaction date for vendor was set to:"+this.current_date);
     }
 }
