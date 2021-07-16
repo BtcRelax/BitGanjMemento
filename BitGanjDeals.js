@@ -21,6 +21,32 @@ class BitGanjDeals {
             log("Last transaction date for vendor was set to:" + this.current_date);
         }
     }
+    getCurrencyAmmount(pEntry){
+        let ce = typeof pEntry !== "undefined" ? pEntry : entry();
+        let vps=ce.field("PaymentSystem");
+        let sca = new Object();
+        switch (vps) {
+            case 'Bitcoin':
+                sca['currency'] = 'btc';
+                sca['amount'] =  ce.field("BTC amount");  
+                break;
+            case 'EasyPay':
+            case 'GlobalMoney':
+            case 'KunaCode':
+                sca['currency'] = 'uah';
+                sca['amount'] =  ce.field("UAH amount");
+                break;
+            case 'USDT (TRC 20)':
+                sca['currency'] = 'usd';
+                sca['amount'] = ce.field("Invested");               
+                break;
+            default:
+                message("Unknown payment system:"+vps);  
+                cancel();
+            break;                                          
+        };
+        return sca;   
+    }
 }
 
 
