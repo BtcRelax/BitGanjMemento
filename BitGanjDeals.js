@@ -23,7 +23,7 @@ BitGanjDeals.prototype.updateVendor = function(pEntry) {
     };
 };
 
-BitGanjDeals.prototype.getCurrencyAmmount = function(pEntry) {
+BitGanjDeals.prototype.getCurrencyAmount = function(pEntry) {
         var ce = typeof pEntry !== "undefined" ? pEntry : entry();
         var vps = ce.field("PaymentSystem"); let sca = new Object();
         switch (vps) {
