@@ -23,6 +23,18 @@ BitGanjDeals.prototype.updateVendor = function(pEntry) {
     };
 };
 
+BitGanjDeals.prototype.calculateInvestmentSum = function(pEntry) {
+    var ce = typeof pEntry !== "undefined" ? pEntry : entry();
+    var sca=this.getCurrencyAmount(ce);
+    var vc=sca['currency'];
+    var va=sca['amount'];
+    var vk=new BitGanjKunaApi();
+    var vr=vk.getExchangeRates(vc,'usd');
+    var vsumm = va * vr.usd;
+    message('Invested:'+vsumm+'$');
+    ce.set("Invested",vsumm);
+}
+
 BitGanjDeals.prototype.getCurrencyAmount = function(pEntry) {
         var ce = typeof pEntry !== "undefined" ? pEntry : entry();
         var vps = ce.field("PaymentSystem"); let sca = new Object();
