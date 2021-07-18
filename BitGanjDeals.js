@@ -23,15 +23,21 @@ BitGanjDeals.prototype.updateVendor = function(pEntry) {
     };
 };
 
-BitGanjDeals.prototype.calculateInvestmentSum = function(pEntry) {
+BitGanjDeals.prototype.calculateInvestmentSum = function(pEntry) {    
     var ce = typeof pEntry !== "undefined" ? pEntry : entry();
+    var vstartsumm = ce.field("Invested");
     var sca=this.getCurrencyAmount(ce);
     var vc=sca['currency'];
     var va=sca['amount'];
     var vk=new BitGanjKunaApi();
     var vr=vk.getExchangeRates(vc,'usd');
     var vsumm = va * vr.usd;
-    message('Invested:'+vsumm+'$');
+    var vuah=vk.getExchangeRates('uah','usd');
+    var vuahsumm = ce.field("IncidentalExpenses") * vuah.usd;
+    vsumm += vuahsumm; 
+    if (vstartsumm !== vsumm) {
+        message('Invested summ changed to:'+vsumm+'$');
+    }
     ce.set("Invested",vsumm);
 }
 
